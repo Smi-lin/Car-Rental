@@ -1,367 +1,573 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
+import "./Rentee.sol";
+import "./CarOwner.sol";
 
 interface USDC {
     function balanceOf(address account) external view returns (uint256);
-    function allowance(address owner, address spender) external view returns (uint256);
-    function transfer(address recipient, uint256 amount) external returns (bool);
+
+    function allowance(
+        address owner,
+        address spender
+    ) external view returns (uint256);
+
+    function transfer(
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
+
     function approve(address spender, uint256 amount) external returns (bool);
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
 }
 
 contract CarHub {
     USDC public USDc;
 
-    struct CarOwnerProfile {
-        string name;
-        string profileImageHash;
-        address carOwnerAddress;
-        bool isRegistered;
-        uint256 registrationTimestamp;
-        uint256 totalVehicles;
-        uint256 activeRentals;
-        uint256 totalEarnings;
-    }
-
-    struct RenteeProfile {
-        string name;
-        string profileImageHash;
-        address renteeAddress;
-        bool isRegistered;
-        uint256 registrationTimestamp;
-        uint256 totalRentals;
-        uint256 activeRentals;
-        uint256 totalSpending;
-    }
+    Rentee public renteeContract;
+    CarOwner public carOwnerContract;
 
     struct Vehicle {
         uint256 id;
         string[] vehicleData;
-        uint256 year;
         uint256 pricePerHour;
-          address vehicleOwner;
+        address vehicleOwner;
         address currentRenter;
-       
         address[] renters;
         bool isAvailable;
         uint256 securityDeposit;
-        uint256 temp_bal;
         uint256 start;
         uint256 end;
+        uint256 agreedDurationInHours;
+        uint256 ratings;
+        address[] ratingsByRenters;
+        string[] reviews;
+        Dispute currentDispute;
+    }
+
+    struct VehicleDetails {
+        uint256 id;
+        string[] vehicleData;
+        uint256 pricePerHour;
+        address vehicleOwner;
+        address currentRenter;
+        address[] renters;
+        bool isAvailable;
+        uint256 securityDeposit;
         uint256 ratings;
         address[] ratingsByRenters;
         string[] reviews;
     }
 
-    mapping(address => CarOwnerProfile) public carOwnerProfiles;
-    mapping(address => RenteeProfile) public renteeProfiles;
+    enum DisputeStatus {
+        None,
+        Raised,
+        Resolved
+    }
+    struct Dispute {
+        uint256 vehicleId;
+        address renter;
+        string description;
+        uint256 requestedRefund;
+        DisputeStatus status;
+        string resolution;
+        uint256 refundAmount;
+        uint256 timestamp;
+    }
     mapping(uint256 => Vehicle) public vehicles;
+    mapping(uint256 => Dispute[]) public vehicleDisputes;
+    mapping(address => uint256[]) private ownerDisputeVehicles;
+    mapping(address => Dispute[]) private renterDisputes;
     uint256 public vehicleCounter;
+    event VehicleListed(
+        uint256 vehicleId,
+        address owner,
+        string imageHash,
+        string make,
+        string model,
+        string rentalTerms,
+        uint256 pricePerHour,
+        uint256 securityDeposit
+    );
+    event PriceUpdated(
+        uint256 vehicleId,
+        uint256 pricePerHour,
+        uint256 securityDeposit
+    );
+    event VehicleRented(
+        uint256 vehicleId,
+        address renter,
+        uint256 rentalStartTime,
+        uint256 rentalEndTime,
+        uint256 totalCost,
+        uint256 securityDeposit
+    );
+    event VehicleReturned(
+        uint256 vehicleId,
+        address renter,
+        uint256 rentalCost,
+        uint256 penalty,
+        uint256 refundAmount,
+        uint256 securityDeposit
+    );
+    event VehicleRated(
+        uint256 vehicleId,
+        address renter,
+        uint256 rating,
+        string review
+    );
 
-    event CarOwnerRegistered(address indexed ownerAddress, string name, uint256 registrationTime);
-    event RenteeRegistered(address indexed renteeAddress, string name, uint256 registrationTime);
-    event VehicleListed(uint256 vehicleId, address indexed owner, string make, string model, string imageHash, uint256 year, uint256 pricePerHour, uint256 securityDeposit);
-    event VehicleRented(uint256 indexed vehicleId, address indexed renter, uint256 rentalStartTime, uint256 rentalEndTime, uint256 totalCost, uint256 securityDeposit);
-    event VehicleReturned(uint256 indexed vehicleId, address indexed renter, uint256 rentalCost, uint256 penalty, uint256 refundAmount, uint256 securityDeposit);
     event Payment(uint256 payment);
 
-    constructor(address usdcContractAddress) {
-        USDc = USDC(usdcContractAddress);
-    }
+    event DisputeRaised(
+        uint256 vehicleId,
+        address renter,
+        string description,
+        uint256 requestedRefund,
+        uint256 timestamp
+    );
 
-    modifier notRegisteredAsCarOwner() {
-        require(!carOwnerProfiles[msg.sender].isRegistered, "Already registered as a car owner");
-        _;
+    event DisputeResolved(
+        uint256 vehicleId,
+        address renter,
+        string resolution,
+        uint256 refundAmount,
+        uint256 timestamp
+    );
+
+    constructor(
+        address usdcContractAddress,
+        address renteeContractAddress,
+        address carOwnerContractAddress
+    ) {
+        USDc = USDC(usdcContractAddress);
+        renteeContract = Rentee(renteeContractAddress);
+        carOwnerContract = CarOwner(carOwnerContractAddress);
     }
 
     modifier onlyRegisteredAsCarOwner() {
-        require(carOwnerProfiles[msg.sender].isRegistered, "Not registered as a car owner");
+        require(
+            carOwnerContract.getCarOwnerProfile(msg.sender).isRegistered,
+            "Not registered as a car owner"
+        );
         _;
-    }
-
-    modifier notRegisteredAsRentee() {
-        require(!renteeProfiles[msg.sender].isRegistered, "Already registered as a rentee");
-        _;
-    }
-
-    modifier onlyRegisteredAsRentee() {
-        require(renteeProfiles[msg.sender].isRegistered, "Not registered as a rentee");
-        _;
-    }
-
-    function registerAsCarOwner(string memory _name, string memory _profileImageHash) external notRegisteredAsCarOwner {
-        require(bytes(_name).length > 0, "Name cannot be empty");
-
-        carOwnerProfiles[msg.sender] = CarOwnerProfile({
-            name: _name,
-            profileImageHash: _profileImageHash,
-            carOwnerAddress: msg.sender,
-            isRegistered: true,
-            registrationTimestamp: block.timestamp,
-            totalVehicles: 0,
-            activeRentals: 0,
-            totalEarnings: 0
-        });
-
-        emit CarOwnerRegistered(msg.sender, _name, block.timestamp);
-    }
-
-    function registerAsRentee(string memory _name, string memory _profileImageHash) external notRegisteredAsRentee {
-        require(bytes(_name).length > 0, "Name cannot be empty");
-
-        renteeProfiles[msg.sender] = RenteeProfile({
-            name: _name,
-            profileImageHash: _profileImageHash,
-            renteeAddress: msg.sender,
-            isRegistered: true,
-            registrationTimestamp: block.timestamp,
-            totalRentals: 0,
-            activeRentals: 0,
-            totalSpending: 0
-        });
-
-        emit RenteeRegistered(msg.sender, _name, block.timestamp);
-    }
-
-    function getCarOwnerProfile(address _ownerAddress) external view returns (CarOwnerProfile memory) {
-        require(carOwnerProfiles[_ownerAddress].isRegistered, "Car owner not registered");
-        return carOwnerProfiles[_ownerAddress];
-    }
-
-    function getRenteeProfile(address _renteeAddress) external view returns (RenteeProfile memory) {
-        require(renteeProfiles[_renteeAddress].isRegistered, "Rentee not registered");
-        return renteeProfiles[_renteeAddress];
     }
 
     function listVehicle(
+        string memory imageHash,
         string memory make,
         string memory model,
-        string memory imageHash,
-        uint256 year,
+        string memory rentalTerms,
         uint256 pricePerHour,
         uint256 securityDeposit
     ) external onlyRegisteredAsCarOwner {
         vehicleCounter++;
 
         Vehicle storage newVehicle = vehicles[vehicleCounter];
+
         newVehicle.id = vehicleCounter;
+        newVehicle.vehicleData.push(imageHash);
         newVehicle.vehicleData.push(make);
         newVehicle.vehicleData.push(model);
-        newVehicle.vehicleData.push(imageHash);
-        newVehicle.year = year;
-        newVehicle.pricePerHour = pricePerHour * 1e6;
-        newVehicle.securityDeposit = securityDeposit * 1e6;
+        newVehicle.vehicleData.push(rentalTerms);
+        newVehicle.pricePerHour = pricePerHour;
+        newVehicle.securityDeposit = securityDeposit;
         newVehicle.vehicleOwner = msg.sender;
         newVehicle.currentRenter = address(0);
         newVehicle.isAvailable = true;
         newVehicle.ratings = 0;
 
+        carOwnerContract.incrementTotalVehicles(msg.sender);
+
+        // Update the car owner's vehicle listing in the CarOwner contract
+        carOwnerContract.addVehicleListing(
+            msg.sender,
+            vehicleCounter,
+            imageHash,
+            make,
+            model,
+            rentalTerms,
+            pricePerHour,
+            securityDeposit
+        );
+
+        carOwnerContract.incrementTotalListings(msg.sender);
+
         emit VehicleListed(
             vehicleCounter,
             msg.sender,
+            imageHash,
             make,
             model,
-            imageHash,
-            year,
-            pricePerHour * 1e6,
-            securityDeposit * 1e6
+            rentalTerms,
+            pricePerHour,
+            securityDeposit
+        );
+    }
+
+    function updateRentalPrice(
+        uint256 vehicleId,
+        uint256 _pricePerHour,
+        uint256 _securityDeposit
+    ) external {
+        Vehicle storage priceUpdate = vehicles[vehicleId];
+        priceUpdate.pricePerHour = _pricePerHour;
+        priceUpdate.securityDeposit = _securityDeposit;
+
+        emit PriceUpdated(vehicleId, _pricePerHour, _securityDeposit);
+    }
+
+    function rentVehicle(uint256 vehicleId, uint256 rentalDuration) external {
+        require(rentalDuration > 0, "Invalid rental duration");
+
+        Vehicle storage vehicle = vehicles[vehicleId];
+        require(
+            vehicle.currentRenter == address(0),
+            "Vehicle is already rented"
+        );
+        require(vehicle.isAvailable, "Vehicle is not available");
+        require(
+            renteeContract.getRenteeProfile(msg.sender).isRegistered,
+            "Not registered as rentee"
         );
 
-        carOwnerProfiles[msg.sender].totalVehicles++;
-    }
+        uint256 start = block.timestamp;
+        uint256 end = start + rentalDuration;
+        uint256 rentalDurationInHours = (rentalDuration + 3599) / 3600;
+        uint256 rentalCost = vehicle.securityDeposit +
+            (vehicle.pricePerHour * rentalDurationInHours);
 
-    function calculateRentCost(uint256 vehicleId, uint256 start, uint256 end) external view returns (uint256, uint256, address) {
-        require(start < end, "Invalid rental period");
+        require(rentalCost > 0, "Invalid rental cost");
+        require(
+            USDc.balanceOf(msg.sender) >= rentalCost,
+            "Insufficient USDC balance"
+        );
+        require(
+            USDc.allowance(msg.sender, address(this)) >= rentalCost,
+            "Insufficient USDC allowance"
+        );
+        require(
+            USDc.transferFrom(msg.sender, vehicle.vehicleOwner, rentalCost),
+            "USDC transfer failed"
+        );
+        Rentee.CurrentRentalData memory rentalData = Rentee.CurrentRentalData({
+            vehicleId: vehicleId,
+            vehicleData: vehicle.vehicleData,
+            start: start,
+            end: end,
+            pricePerHour: vehicle.pricePerHour,
+            securityDeposit: vehicle.securityDeposit,
+            vehicleOwner: vehicle.vehicleOwner,
+            currentRenter: msg.sender,
+            isAvailable: false,
+            ratings: vehicle.ratings
+        });
 
-        Vehicle storage vehicle = vehicles[vehicleId];
+        renteeContract.addCurrentRental(msg.sender, rentalData);
 
-        uint256 durationInSeconds = end - start;
-        uint256 durationInHours = durationInSeconds / 3600;
-        uint256 rent_cost = vehicle.securityDeposit + ((vehicle.pricePerHour * durationInHours));
+        renteeContract.updateRenteeStats(msg.sender, rentalCost);
 
-        return (rent_cost, durationInHours, address(this));
-    }
-
-    function rentVehicle(uint256 vehicleId, uint256 start, uint256 end) external onlyRegisteredAsRentee {
-        require(start < end, "Invalid rental period");
-
-        Vehicle storage vehicle = vehicles[vehicleId];
-        require(vehicle.currentRenter == address(0), "Vehicle is already rented");
-        require(vehicle.isAvailable, "Vehicle is not available");
-
-        RenteeProfile storage user = renteeProfiles[msg.sender];
-        uint256 rentCost = vehicle.securityDeposit + ((vehicle.pricePerHour * (end - start)) / 3600000);
-        require(rentCost > 0, "Invalid rental cost");
-
-        require(USDc.balanceOf(msg.sender) >= rentCost, "Insufficient USDC balance");
-        require(USDc.allowance(msg.sender, address(this)) >= rentCost, "Insufficient USDC allowance");
-
-        require(USDc.transferFrom(msg.sender, vehicle.vehicleOwner, rentCost), "USDC transfer failed");
-
-        vehicle.temp_bal = rentCost;
         vehicle.currentRenter = msg.sender;
         vehicle.renters.push(msg.sender);
         vehicle.isAvailable = false;
         vehicle.start = start;
         vehicle.end = end;
+        vehicle.agreedDurationInHours = rentalDurationInHours;
 
-        emit VehicleRented(vehicleId, msg.sender, start, end, rentCost, vehicle.securityDeposit);
+        emit VehicleRented(
+            vehicleId,
+            msg.sender,
+            start,
+            end,
+            rentalCost,
+            vehicle.securityDeposit
+        );
 
-        user.totalRentals++;
-        user.activeRentals++;
-        user.totalSpending += rentCost;
+        carOwnerContract.incrementActiveRentals(vehicle.vehicleOwner);
+        carOwnerContract.addEarnings(vehicle.vehicleOwner, rentalCost);
 
-        CarOwnerProfile storage owner = carOwnerProfiles[vehicle.vehicleOwner];
-        owner.activeRentals++;
-        owner.totalEarnings += rentCost;
-    }
-
-    // function completeRental(uint256 vehicleId) external {
-    //     Vehicle storage vehicle = vehicles[vehicleId];
-    //     require(vehicle.currentRenter == msg.sender, "You are not the renter of this vehicle");
-
-    //     uint256 rentalDuration = (block.timestamp * 1000) - vehicle.start;
-    //     uint256 rentalCost = (vehicle.pricePerHour * rentalDuration) / 3600000;
-
-    //     uint256 penalty = 0;
-    //     if (block.timestamp > vehicle.end / 1000) {
-    //         uint256 lateDuration = block.timestamp - (vehicle.end / 1000);
-    //         penalty = (vehicle.pricePerHour * lateDuration) / 3600;
-    //     }
-
-    //     uint256 totalCost = rentalCost + penalty;
-
-    //     emit Payment(totalCost);
-
-    //     require(vehicle.temp_bal >= totalCost, "Deposit insufficient to cover rental cost and penalties");
-
-    //     uint256 refundAmount = vehicle.temp_bal - totalCost;
-
-    //     require(USDc.transfer(vehicle.vehicleOwner, totalCost), "USDC payment to owner failed");
-
-    //     if (refundAmount > 0) {
-    //         require(USDc.transfer(msg.sender, refundAmount), "Refund to renter failed");
-    //     }
-
-    //     vehicle.currentRenter = address(0);
-    //     vehicle.isAvailable = true;
-
-    //     emit VehicleReturned(
-    //         vehicleId,
-    //         msg.sender,
-    //         rentalCost,
-    //         penalty,
-    //         refundAmount,
-    //         vehicle.securityDeposit
-    //     );
-
-    //     RenteeProfile storage renter = renteeProfiles[msg.sender];
-    //     renter.activeRentals--;
-
-    //     CarOwnerProfile storage owner = carOwnerProfiles[vehicle.vehicleOwner];
-    //     owner.activeRentals--;
-    // }
-
-function completeRental(uint256 vehicleId) external onlyRegisteredAsRentee {
-    Vehicle storage vehicle = vehicles[vehicleId];
-    require(vehicle.currentRenter == msg.sender, "You are not the renter of this vehicle");
-
-    
-    require(block.timestamp >= vehicle.end / 1000, "Cannot complete rental before end time");
-
-    uint256 rentalDuration = (block.timestamp * 1000) - vehicle.start;
-    uint256 rentalCost = (vehicle.pricePerHour * rentalDuration) / 3600000;
-
-    uint256 penalty = 0;
-
-    if (block.timestamp > vehicle.end / 1000) {
-        uint256 lateDuration = block.timestamp - (vehicle.end / 1000);
-        penalty = (vehicle.pricePerHour * lateDuration) / 3600; 
-    }
-
- 
-    if (penalty > vehicle.securityDeposit) {
-        penalty = vehicle.securityDeposit;
-    }
-
-    uint256 totalCost = rentalCost + penalty;
-
-   
-    if (totalCost > vehicle.temp_bal) {
-        
-        uint256 outstanding = totalCost - vehicle.temp_bal;
-        require(USDc.allowance(msg.sender, address(this)) >= outstanding, "Insufficient USDC allowance for outstanding balance");
-        require(USDc.transferFrom(msg.sender, address(this), outstanding), "Insufficient funds to cover outstanding balance");
-
-        vehicle.temp_bal = 0;
-    } else {
-       
-        vehicle.temp_bal -= totalCost;
-    }
-
-    uint256 refundAmount = vehicle.temp_bal;
-
-    
-    require(USDc.transfer(vehicle.vehicleOwner, totalCost), "USDC transfer to owner failed");
-
-   
-    if (refundAmount > 0) {
-        require(USDc.transfer(msg.sender, refundAmount), "Refund to renter failed");
-    }
-
-    vehicle.currentRenter = address(0);
-    vehicle.isAvailable = true;
-
-    emit VehicleReturned(
-        vehicleId,
-        msg.sender,
-        rentalCost,
-        penalty,
-        refundAmount,
-        vehicle.securityDeposit
-    );
-
-    
-    RenteeProfile storage renter = renteeProfiles[msg.sender];
-    renter.activeRentals--;
-
-  
-    CarOwnerProfile storage owner = carOwnerProfiles[vehicle.vehicleOwner];
-    owner.activeRentals--;
-}
-
-
-
-
-    function getVehicleDetails(uint256 vehicleId) external view returns (
-        uint256,
-        string memory,
-        string memory,
-        string memory,
-        uint256,
-        uint256,
-        address,
-        address,
-        address[] memory,
-        bool,
-        uint256,
-        string[] memory
-    ) {
-        Vehicle storage vehicle = vehicles[vehicleId];
-        return (
-            vehicle.id,
-            vehicle.vehicleData[0],
-            vehicle.vehicleData[1],
-            vehicle.vehicleData[2],
-            vehicle.pricePerHour,
-            vehicle.securityDeposit,
+        carOwnerContract.addActiveRental(
             vehicle.vehicleOwner,
-            vehicle.currentRenter,
-            vehicle.renters,
-            vehicle.isAvailable,
-            vehicle.ratings,
-            vehicle.reviews
+            vehicleId,
+            vehicle.vehicleData,
+            msg.sender,
+            block.timestamp,
+            block.timestamp + rentalDuration,
+            rentalCost
         );
     }
-}
 
+    function completeRental(uint256 vehicleId) external {
+        Vehicle storage vehicle = vehicles[vehicleId];
+
+        require(
+            vehicle.currentRenter == msg.sender,
+            "You are not the renter of this vehicle"
+        );
+        require(
+            block.timestamp >= vehicle.end,
+            "Rental period has not ended yet"
+        );
+
+        uint256 actualDurationInHours = (block.timestamp -
+            vehicle.start +
+            3599) / 3600;
+
+        uint256 rentalCost = vehicle.pricePerHour *
+            vehicle.agreedDurationInHours;
+        uint256 totalCost = rentalCost;
+
+        uint256 lateFee = 0;
+
+        if (actualDurationInHours > vehicle.agreedDurationInHours) {
+            uint256 extraHours = actualDurationInHours -
+                vehicle.agreedDurationInHours;
+            lateFee = (extraHours * vehicle.pricePerHour * 12) / 10;
+            totalCost += lateFee;
+        }
+
+        emit Payment(totalCost);
+
+        uint256 refundAmount = 0;
+        if (totalCost < vehicle.securityDeposit) {
+            refundAmount = vehicle.securityDeposit - totalCost;
+        }
+
+        require(
+            USDc.transfer(vehicle.vehicleOwner, totalCost),
+            "USDC payment to owner failed"
+        );
+
+        if (refundAmount > 0) {
+            require(
+                USDc.transfer(msg.sender, refundAmount),
+                "Refund to renter failed"
+            );
+        }
+
+        vehicle.currentRenter = address(0);
+        vehicle.isAvailable = true;
+
+        Rentee.RentalData memory rentalData = Rentee.RentalData({
+            vehicleId: vehicleId,
+            start: vehicle.start,
+            end: block.timestamp,
+            totalCost: totalCost,
+            lateFee: lateFee,
+            refundAmount: refundAmount,
+            vehicleData: vehicle.vehicleData,
+            pricePerHour: vehicle.pricePerHour,
+            securityDeposit: vehicle.securityDeposit,
+            vehicleOwner: vehicle.vehicleOwner,
+            ratings: vehicle.ratings
+        });
+
+        renteeContract.addPastRental(msg.sender, rentalData);
+
+        carOwnerContract.decrementActiveRentals(vehicle.vehicleOwner);
+        carOwnerContract.addCompletedRental(
+            vehicle.vehicleOwner,
+            vehicleId,
+            vehicle.vehicleData,
+            msg.sender,
+            vehicle.start,
+            block.timestamp,
+            totalCost
+        );
+
+        emit VehicleReturned(
+            vehicleId,
+            msg.sender,
+            rentalCost,
+            totalCost > rentalCost ? totalCost - rentalCost : 0,
+            refundAmount,
+            vehicle.securityDeposit
+        );
+    }
+
+    function rateVehicle(
+        uint256 vehicleId,
+        uint256 rating,
+        string memory review
+    ) external {
+        require(rating >= 1 && rating <= 5, "Rating must be between 1 and 5");
+
+        Vehicle storage vehicle = vehicles[vehicleId];
+
+        bool hasRented = false;
+        for (uint256 i = 0; i < vehicle.renters.length; i++) {
+            if (vehicle.renters[i] == msg.sender) {
+                hasRented = true;
+                break;
+            }
+        }
+        require(hasRented, "You have never rented this vehicle");
+
+        bool hasRated = false;
+        for (uint256 i = 0; i < vehicle.ratingsByRenters.length; i++) {
+            if (vehicle.ratingsByRenters[i] == msg.sender) {
+                hasRated = true;
+                break;
+            }
+        }
+        require(!hasRated, "You have already rated this vehicle");
+
+        vehicle.ratingsByRenters.push(msg.sender);
+        vehicle.reviews.push(review);
+
+        uint256 totalRating = vehicle.ratings + (rating * 10000);
+        vehicle.ratings = totalRating / (vehicle.ratingsByRenters.length);
+
+        emit VehicleRated(vehicleId, msg.sender, rating, review);
+    }
+
+    function raiseDispute(
+        uint256 vehicleId,
+        string memory description,
+        uint256 requestedRefund
+    ) external {
+        Vehicle storage vehicle = vehicles[vehicleId];
+        require(
+            msg.sender == vehicle.currentRenter,
+            "Only current renter can raise disputes"
+        );
+        require(
+            vehicle.currentDispute.status == DisputeStatus.None,
+            "Active dispute exists"
+        );
+        require(
+            requestedRefund <= vehicle.securityDeposit,
+            "Requested refund exceeds security deposit"
+        );
+
+        Dispute memory newDispute = Dispute({
+            vehicleId: vehicleId,
+            renter: msg.sender,
+            description: description,
+            requestedRefund: requestedRefund,
+            status: DisputeStatus.Raised,
+            resolution: "",
+            refundAmount: 0,
+            timestamp: block.timestamp
+        });
+        vehicle.currentDispute = newDispute;
+        vehicleDisputes[vehicleId].push(newDispute);
+
+        if (vehicleDisputes[vehicleId].length == 1) {
+            ownerDisputeVehicles[vehicle.vehicleOwner].push(vehicleId);
+        }
+
+        renterDisputes[msg.sender].push(newDispute);
+
+        emit DisputeRaised(
+            vehicleId,
+            msg.sender,
+            description,
+            requestedRefund,
+            block.timestamp
+        );
+    }
+
+    function resolveDispute(
+        uint256 vehicleId,
+        string memory resolution,
+        uint256 refundAmount
+    ) external {
+        Vehicle storage vehicle = vehicles[vehicleId];
+        require(
+            msg.sender == vehicle.vehicleOwner,
+            "Only vehicle owner can resolve disputes"
+        );
+        require(
+            vehicle.currentDispute.status == DisputeStatus.Raised,
+            "No active dispute"
+        );
+        require(
+            refundAmount <= vehicle.currentDispute.requestedRefund,
+            "Refund exceeds requested amount"
+        );
+
+        vehicle.currentDispute.status = DisputeStatus.Resolved;
+        vehicle.currentDispute.resolution = resolution;
+        vehicle.currentDispute.refundAmount = refundAmount;
+
+        if (refundAmount > 0) {
+            require(
+                USDc.transfer(vehicle.currentDispute.renter, refundAmount),
+                "Refund transfer failed"
+            );
+        }
+        uint256 lastIndex = vehicleDisputes[vehicleId].length - 1;
+        vehicleDisputes[vehicleId][lastIndex].status = DisputeStatus.Resolved;
+        vehicleDisputes[vehicleId][lastIndex].resolution = resolution;
+        vehicleDisputes[vehicleId][lastIndex].refundAmount = refundAmount;
+
+        emit DisputeResolved(
+            vehicleId,
+            vehicle.currentDispute.renter,
+            resolution,
+            refundAmount,
+            block.timestamp
+        );
+    }
+
+    function getCarOwnerAllDisputes(
+        address owner
+    ) external view returns (Dispute[] memory) {
+        uint256[] memory vehicleIds = ownerDisputeVehicles[owner];
+        uint256 totalDisputes = 0;
+
+        for (uint256 i = 0; i < vehicleIds.length; i++) {
+            totalDisputes += vehicleDisputes[vehicleIds[i]].length;
+        }
+
+        Dispute[] memory allDisputes = new Dispute[](totalDisputes);
+        uint256 currentIndex = 0;
+
+        for (uint256 i = 0; i < vehicleIds.length; i++) {
+            Dispute[] memory vehicleDispute = vehicleDisputes[vehicleIds[i]];
+            for (uint256 j = 0; j < vehicleDispute.length; j++) {
+                allDisputes[currentIndex] = vehicleDispute[j];
+                currentIndex++;
+            }
+        }
+
+        return allDisputes;
+    }
+
+    function getRenterDisputes(
+        address renter
+    ) external view returns (Dispute[] memory) {
+        return renterDisputes[renter];
+    }
+
+    function getAllVehicles() external view returns (VehicleDetails[] memory) {
+        uint256 totalVehicles = vehicleCounter;
+        VehicleDetails[] memory allVehicles = new VehicleDetails[](
+            totalVehicles
+        );
+
+        for (uint256 i = 1; i <= totalVehicles; i++) {
+            Vehicle storage vehicle = vehicles[i];
+            allVehicles[i - 1] = VehicleDetails({
+                id: vehicle.id,
+                vehicleData: vehicle.vehicleData,
+                pricePerHour: vehicle.pricePerHour,
+                vehicleOwner: vehicle.vehicleOwner,
+                currentRenter: vehicle.currentRenter,
+                renters: vehicle.renters,
+                isAvailable: vehicle.isAvailable,
+                securityDeposit: vehicle.securityDeposit,
+                ratings: vehicle.ratings,
+                ratingsByRenters: vehicle.ratingsByRenters,
+                reviews: vehicle.reviews
+            });
+        }
+
+        return allVehicles;
+    }
+}
