@@ -13,21 +13,9 @@ contract Rentee {
         uint256 totalSpending;
     }
 
-     struct VehicleDetails {
-    uint256 id;
-    string[] vehicleData;
-    uint256 pricePerHour;
-    address vehicleOwner;
-    address currentRenter;
-    address[] renters;
-    bool isAvailable;
-    uint256 securityDeposit;
-    uint256 ratings;
-    address[] ratingsByRenters;
-    string[] reviews;
-}
 
-   struct CurrentRental {
+
+    struct CurrentRental {
         uint256 vehicleId;
         uint256 start;
         uint256 end;
@@ -40,6 +28,32 @@ contract Rentee {
         uint256 ratings;
     }
 
+        struct CurrentRentalData {
+        uint256 vehicleId;
+        uint256 start;
+        uint256 end;
+        string[] vehicleData;
+        uint256 pricePerHour;
+        uint256 securityDeposit;
+        address vehicleOwner;
+        address currentRenter;
+        bool isAvailable;
+        uint256 ratings;
+    }
+
+    struct RentalData {
+        uint256 vehicleId;
+        uint256 start;
+        uint256 end;
+        uint256 totalCost;
+        uint256 lateFee;
+        uint256 refundAmount;
+        string[] vehicleData;
+        uint256 pricePerHour;
+        uint256 securityDeposit;
+        address vehicleOwner;
+        uint256 ratings;
+    }
     struct PastRental {
         uint256 vehicleId;
         uint256 start;
@@ -51,30 +65,18 @@ contract Rentee {
         uint256 pricePerHour;
         uint256 securityDeposit;
         address vehicleOwner;
-        address currentRenter;
+        address pastRenter;
         uint256 ratings;
     }
-
-    
-
     mapping(address => RenteeProfile) public renteeProfiles;
     mapping(address => CurrentRental[]) public currentRentals;
     mapping(address => PastRental[]) public pastRentals;
-
-
     event RenteeRegistered(
         address indexed renteeAddress,
         string name,
         uint256 registrationTime
     );
-
-    event renteeProfileUpdated(
-        
-        string name,
-        string profileImageHash
-       
-    );
-
+    event renteeProfileUpdated(string name, string profileImageHas);
     modifier notRegisteredAsRentee() {
         require(
             !renteeProfiles[msg.sender].isRegistered,
@@ -92,7 +94,7 @@ contract Rentee {
     }
 
     function registerAsRentee(
-        string memory _name, 
+        string memory _name,
         string memory _profileImageHash
     ) external notRegisteredAsRentee {
         require(bytes(_name).length > 0, "Name cannot be empty");
@@ -111,25 +113,57 @@ contract Rentee {
         emit RenteeRegistered(msg.sender, _name, block.timestamp);
     }
 
+   
+    function addCurrentRental(address currentRenter, CurrentRentalData memory rentalData) external {
+    require(msg.sender != address(0), "Invalid rentee address");
     
-function updateRenteeProfile(
-    string memory _name,
-    string memory _profileImageHash
-) external onlyRegisteredAsRentee {
-    require(bytes(_name).length > 0, "Name cannot be empty");
-
-    RenteeProfile storage renteeProfile =  renteeProfiles[msg.sender];
-     renteeProfile.name = _name;
-    renteeProfile.profileImageHash =_profileImageHash ;
-
-      emit renteeProfileUpdated( _name, _profileImageHash);
-
+    currentRentals[currentRenter].push(
+        CurrentRental({
+            vehicleId: rentalData.vehicleId,
+            start: rentalData.start,
+            end: rentalData.end,
+            vehicleData: rentalData.vehicleData,
+            pricePerHour: rentalData.pricePerHour,
+            securityDeposit: rentalData.securityDeposit,
+            vehicleOwner: rentalData.vehicleOwner,
+            currentRenter: currentRenter,  
+            isAvailable: rentalData.isAvailable,
+            ratings: rentalData.ratings
+        })
+    );
+    
+    // Update rentee stats
+    renteeProfiles[msg.sender].activeRentals++;
 }
-    
 
-    function getRenteeProfile(
-        address _renteeAddress
-    ) external view returns (RenteeProfile memory) {
+
+
+
+    function updateRenteeProfile(
+        string memory _name,
+        string memory _profileImageHash
+    ) external onlyRegisteredAsRentee {
+        require(bytes(_name).length > 0, "Name cannot be empty");
+
+        RenteeProfile storage renteeProfile = renteeProfiles[msg.sender];
+        renteeProfile.name = _name;
+        renteeProfile.profileImageHash = _profileImageHash;
+
+        emit renteeProfileUpdated(_name, _profileImageHash);
+    }
+
+    function updateRenteeStats(address rentee, uint256 rentalCost) external {
+        RenteeProfile storage user = renteeProfiles[rentee];
+        user.totalRentals++;
+        user.activeRentals++;
+        user.totalSpending += rentalCost;
+    }
+
+    function getRenteeProfile(address _renteeAddress)
+        external
+        view
+        returns (RenteeProfile memory)
+    {
         require(
             renteeProfiles[_renteeAddress].isRegistered,
             "Rentee not registered"
@@ -137,17 +171,41 @@ function updateRenteeProfile(
         return renteeProfiles[_renteeAddress];
     }
 
-function getCurrentRentals(address renterAddress) external view returns (CurrentRental[] memory) {
-    return currentRentals[renterAddress];
-}
+    function getCurrentRentals(address renterAddress)
+        external
+        view
+        returns (CurrentRental[] memory)
+    {
+        return currentRentals[renterAddress];
+    }
 
-function getPastRentals(address renterAddress) external view returns (PastRental[] memory) {
-    return pastRentals[renterAddress];
-}
+    function getPastRentals(address renterAddress)
+        external
+        view
+        returns (PastRental[] memory)
+    {
+        return pastRentals[renterAddress];
+    }
 
-    
+    function addPastRental(address rentee, RentalData memory rentalData)
+        external
+    {
+        PastRental memory pastRental = PastRental({
+            vehicleId: rentalData.vehicleId,
+            start: rentalData.start,
+            end: rentalData.end,
+            totalCost: rentalData.totalCost,
+            lateFee: rentalData.lateFee,
+            refundAmount: rentalData.refundAmount,
+            vehicleData: rentalData.vehicleData,
+            pricePerHour: rentalData.pricePerHour,
+            securityDeposit: rentalData.securityDeposit,
+            vehicleOwner: rentalData.vehicleOwner,
+            pastRenter: rentee,
+            ratings: rentalData.ratings
+        });
 
-
-
-
+        pastRentals[rentee].push(pastRental);
+        renteeProfiles[rentee].activeRentals--;
+    }
 }
