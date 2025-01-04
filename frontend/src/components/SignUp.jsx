@@ -130,7 +130,7 @@ const SignUp = () => {
                   )}
                 </div>
                 <label className="cursor-pointer">
-                  <span className="bg-[#03dac6] text-white px-4 py-2 rounded-lg hover:bg-[#ff0266] transition-all duration-300">
+                  <span className="bg-[#6470f5] text-white px-4 py-2 rounded-lg  transition-all duration-300">
                     Choose Profile Picture
                   </span>
                   <input
@@ -181,7 +181,7 @@ const SignUp = () => {
 
               <button
                 type="submit"
-                className="w-full bg-[#03dac6] text-white py-4 px-6 rounded-lg hover:bg-[#ff0266] transition-all duration-300 font-medium text-lg mt-8 transform hover:-translate-y-1"
+                className="w-full bg-[#6470f5] text-white py-4 px-6 rounded-lg  transition-all duration-300 font-medium text-lg mt-8 transform hover:-translate-y-1"
               >
                 Create Account
               </button>
@@ -189,7 +189,7 @@ const SignUp = () => {
               <div className="space-y-4 pt-6">
                 <div className="text-center text-gray-600">
                   <span>Want to list your car? </span>
-                  <Link to="/carownerLogin" className="text-[#03dac6] font-medium hover:text-[#ff0266] transition-colors duration-300">
+                  <Link to="/carownerSignup" className="text-[#03dac6] font-medium  transition-colors duration-300">
                     Sign Up as a Car Owner
                   </Link>
                 </div>

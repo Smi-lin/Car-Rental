@@ -7,7 +7,8 @@ import SignUp from "./components/SignUp";
 import Fleet from "./components/Fleet";
 import AboutUs from "./components/AboutUs";
 import Faq from "./components/Faq";
-import CarOwnerSignUp from "./components/CarOwnerSignup";
+import CarOwnerDashboardPage from "./pages/CarOwner/CarOwnerDashboardPage";
+import CarOwnerSignUp from "./components/CarOwner/CarOwnerSignup";
 
 const App = () => {
   return (
@@ -30,10 +31,10 @@ const App = () => {
           }
         />
         <Route
-          path="/carownerLogin"
+          path="/carownerSignup"
           element={
             <Layout>
-              <CarOwnerSignUp />
+              <CarOwnerSignUp/>
             </Layout>
           }
         />
@@ -60,6 +61,12 @@ const App = () => {
             <Layout>
               <Faq />
             </Layout>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+              <CarOwnerDashboardPage />
           }
         />
       </Routes>
