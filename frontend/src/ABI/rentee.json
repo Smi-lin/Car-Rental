@@ -1,0 +1,650 @@
+[
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "renteeAddress",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "registrationTime",
+				"type": "uint256"
+			}
+		],
+		"name": "RenteeRegistered",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "profileImageHas",
+				"type": "string"
+			}
+		],
+		"name": "renteeProfileUpdated",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "currentRenter",
+				"type": "address"
+			},
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "vehicleId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "start",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "end",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string[]",
+						"name": "vehicleData",
+						"type": "string[]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "pricePerHour",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "securityDeposit",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "vehicleOwner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "currentRenter",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "isAvailable",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "ratings",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct Rentee.CurrentRentalData",
+				"name": "rentalData",
+				"type": "tuple"
+			}
+		],
+		"name": "addCurrentRental",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "rentee",
+				"type": "address"
+			},
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "vehicleId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "start",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "end",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalCost",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lateFee",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "refundAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string[]",
+						"name": "vehicleData",
+						"type": "string[]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "pricePerHour",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "securityDeposit",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "vehicleOwner",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "ratings",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct Rentee.RentalData",
+				"name": "rentalData",
+				"type": "tuple"
+			}
+		],
+		"name": "addPastRental",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "currentRentals",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "start",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "end",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "pricePerHour",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "securityDeposit",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "vehicleOwner",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "currentRenter",
+				"type": "address"
+			},
+			{
+				"internalType": "bool",
+				"name": "isAvailable",
+				"type": "bool"
+			},
+			{
+				"internalType": "uint256",
+				"name": "ratings",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "renterAddress",
+				"type": "address"
+			}
+		],
+		"name": "getCurrentRentals",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "vehicleId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "start",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "end",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string[]",
+						"name": "vehicleData",
+						"type": "string[]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "pricePerHour",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "securityDeposit",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "vehicleOwner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "currentRenter",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "isAvailable",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "ratings",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct Rentee.CurrentRental[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "renterAddress",
+				"type": "address"
+			}
+		],
+		"name": "getPastRentals",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "vehicleId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "start",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "end",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalCost",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lateFee",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "refundAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string[]",
+						"name": "vehicleData",
+						"type": "string[]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "pricePerHour",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "securityDeposit",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "vehicleOwner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "pastRenter",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "ratings",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct Rentee.PastRental[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_renteeAddress",
+				"type": "address"
+			}
+		],
+		"name": "getRenteeProfile",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "profileImageHash",
+						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "renteeAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "isRegistered",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "registrationTimestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalRentals",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "activeRentals",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalSpending",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct Rentee.RenteeProfile",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "pastRentals",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "start",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "end",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "totalCost",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "lateFee",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "refundAmount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "pricePerHour",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "securityDeposit",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "vehicleOwner",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "pastRenter",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "ratings",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_profileImageHash",
+				"type": "string"
+			}
+		],
+		"name": "registerAsRentee",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "renteeProfiles",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "profileImageHash",
+				"type": "string"
+			},
+			{
+				"internalType": "address",
+				"name": "renteeAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "bool",
+				"name": "isRegistered",
+				"type": "bool"
+			},
+			{
+				"internalType": "uint256",
+				"name": "registrationTimestamp",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "totalRentals",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "activeRentals",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "totalSpending",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_profileImageHash",
+				"type": "string"
+			}
+		],
+		"name": "updateRenteeProfile",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "rentee",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "rentalCost",
+				"type": "uint256"
+			}
+		],
+		"name": "updateRenteeStats",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

@@ -5,15 +5,15 @@ import { toast } from "react-toastify";
 import { baseSepolia } from "@reown/appkit/networks";
 import { ErrorDecoder } from "ethers-decode-error";
 
-const useRegisterAsCarOwner = () => {
-  const contract = useContractInstance("CONTRACT2", true);
+const useUpdateRenteeProfile = () => {
+  const contract = useContractInstance("CONTRACT3", true);
   const { address } = useAppKitAccount();
   const { chainId } = useAppKitNetwork();
 
   return useCallback(
-    async (username, imageHash) => {
+    async ( username, imageHash) => {
       if (!username || !imageHash) {
-        toast.error("UserName and Profile photo are required");
+        toast.error("All fields are required");
         return;
       }
 
@@ -33,33 +33,33 @@ const useRegisterAsCarOwner = () => {
       }
 
       try {
-        const estimatedGas = await contract.initiateTransaction.estimateGas(
-          amount,
-          walletAddress
-        
+        const estimatedGas = await contract.updateRenteeProfile.estimateGas(
+          index,
+          title,
+          description
         );
 
-        const tx = await contract.registerAsCarOwner(username, imageHash, {
+        const tx = await contract.updateTodo( username, imageHash, {
           gasLimit: (estimatedGas * BigInt(120)) / BigInt(100),
         });
 
         const receipt = await tx.wait();
 
         if (receipt.status === 1) {
-          toast.success("CarOwner registered successfully");
+          toast.success("Profile updated successfully");
           return;
         }
-
-        toast.error("Failed to register as a CarOwner");
+        toast.error("Failed to update Profile");
         return;
-      } catch (err) {
+      } catch (error) {
         const errorDecoder = ErrorDecoder.create();
-        const { reason } = await errorDecoder.decode(err);
-        toast.error(reason);
+        const decodedError = await errorDecoder.decode(error);
+        console.error("Error updating todo:", decodedError);
+        toast.error(decodedError.reason);
       }
     },
-    [contract, address, chainId]
+    [address, chainId, contract]
   );
 };
 
-export default useRegisterAsCarOwner ;
+export default useUpdateRenteeProfile;

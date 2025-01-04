@@ -1,0 +1,882 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "usdcContractAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "renteeContractAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "carOwnerContractAddress",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "renter",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "requestedRefund",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"name": "DisputeRaised",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "renter",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "resolution",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "refundAmount",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"name": "DisputeResolved",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "payment",
+				"type": "uint256"
+			}
+		],
+		"name": "Payment",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "pricePerHour",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "securityDeposit",
+				"type": "uint256"
+			}
+		],
+		"name": "PriceUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "imageHash",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "make",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "model",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "rentalTerms",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "pricePerHour",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "securityDeposit",
+				"type": "uint256"
+			}
+		],
+		"name": "VehicleListed",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "renter",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "rating",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "review",
+				"type": "string"
+			}
+		],
+		"name": "VehicleRated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "renter",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "rentalStartTime",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "rentalEndTime",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "totalCost",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "securityDeposit",
+				"type": "uint256"
+			}
+		],
+		"name": "VehicleRented",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "renter",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "rentalCost",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "penalty",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "refundAmount",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "securityDeposit",
+				"type": "uint256"
+			}
+		],
+		"name": "VehicleReturned",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "USDc",
+		"outputs": [
+			{
+				"internalType": "contract USDC",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "carOwnerContract",
+		"outputs": [
+			{
+				"internalType": "contract CarOwner",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			}
+		],
+		"name": "completeRental",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getAllVehicles",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string[]",
+						"name": "vehicleData",
+						"type": "string[]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "pricePerHour",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "vehicleOwner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "currentRenter",
+						"type": "address"
+					},
+					{
+						"internalType": "address[]",
+						"name": "renters",
+						"type": "address[]"
+					},
+					{
+						"internalType": "bool",
+						"name": "isAvailable",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "securityDeposit",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "ratings",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address[]",
+						"name": "ratingsByRenters",
+						"type": "address[]"
+					},
+					{
+						"internalType": "string[]",
+						"name": "reviews",
+						"type": "string[]"
+					}
+				],
+				"internalType": "struct CarHub.VehicleDetails[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "getCarOwnerAllDisputes",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "vehicleId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "renter",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "description",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "requestedRefund",
+						"type": "uint256"
+					},
+					{
+						"internalType": "enum CarHub.DisputeStatus",
+						"name": "status",
+						"type": "uint8"
+					},
+					{
+						"internalType": "string",
+						"name": "resolution",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "refundAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct CarHub.Dispute[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "renter",
+				"type": "address"
+			}
+		],
+		"name": "getRenterDisputes",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "vehicleId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "renter",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "description",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "requestedRefund",
+						"type": "uint256"
+					},
+					{
+						"internalType": "enum CarHub.DisputeStatus",
+						"name": "status",
+						"type": "uint8"
+					},
+					{
+						"internalType": "string",
+						"name": "resolution",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "refundAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct CarHub.Dispute[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "imageHash",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "make",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "model",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "rentalTerms",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "pricePerHour",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "securityDeposit",
+				"type": "uint256"
+			}
+		],
+		"name": "listVehicle",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "requestedRefund",
+				"type": "uint256"
+			}
+		],
+		"name": "raiseDispute",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "rating",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "review",
+				"type": "string"
+			}
+		],
+		"name": "rateVehicle",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "rentalDuration",
+				"type": "uint256"
+			}
+		],
+		"name": "rentVehicle",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "renteeContract",
+		"outputs": [
+			{
+				"internalType": "contract Rentee",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "resolution",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "refundAmount",
+				"type": "uint256"
+			}
+		],
+		"name": "resolveDispute",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_pricePerHour",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_securityDeposit",
+				"type": "uint256"
+			}
+		],
+		"name": "updateRentalPrice",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "vehicleCounter",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "vehicleDisputes",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "renter",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "requestedRefund",
+				"type": "uint256"
+			},
+			{
+				"internalType": "enum CarHub.DisputeStatus",
+				"name": "status",
+				"type": "uint8"
+			},
+			{
+				"internalType": "string",
+				"name": "resolution",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "refundAmount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "vehicles",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "pricePerHour",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "vehicleOwner",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "currentRenter",
+				"type": "address"
+			},
+			{
+				"internalType": "bool",
+				"name": "isAvailable",
+				"type": "bool"
+			},
+			{
+				"internalType": "uint256",
+				"name": "securityDeposit",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "start",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "end",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "agreedDurationInHours",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "ratings",
+				"type": "uint256"
+			},
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "vehicleId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "renter",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "description",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "requestedRefund",
+						"type": "uint256"
+					},
+					{
+						"internalType": "enum CarHub.DisputeStatus",
+						"name": "status",
+						"type": "uint8"
+					},
+					{
+						"internalType": "string",
+						"name": "resolution",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "refundAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct CarHub.Dispute",
+				"name": "currentDispute",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
