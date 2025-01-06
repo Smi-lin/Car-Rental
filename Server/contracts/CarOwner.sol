@@ -12,6 +12,9 @@ contract CarOwner {
         uint256 activeRentals;
         uint256 totalEarnings;
     }
+
+    CarOwnerProfile[] public carOwnerprof;
+
     struct VehicleListing {
         uint256 vehicleId;
         string imageHash;
@@ -59,7 +62,10 @@ contract CarOwner {
     mapping(address => OwnerHistory) public ownerHistories;
     mapping(address => CarOwnerProfile) public carOwnerProfiles;
 
-
+    modifier validAddress() {
+        require(msg.sender != address(0), "Zero Address not allowed");
+        _;
+    }
     event CarOwnerRegistered(
         address indexed ownerAddress,
         string name,
@@ -90,7 +96,7 @@ contract CarOwner {
         require(msg.sender != address(0), "Address zero not allowed");
         require(bytes(_name).length > 0, "Name cannot be empty");
 
-        carOwnerProfiles[msg.sender] = CarOwnerProfile({
+        CarOwnerProfile memory newProfile = CarOwnerProfile({
             name: _name,
             profileImageHash: _profileImageHash,
             carOwnerAddress: msg.sender,
@@ -100,6 +106,9 @@ contract CarOwner {
             activeRentals: 0,
             totalEarnings: 0
         });
+
+        carOwnerProfiles[msg.sender] = newProfile;
+        carOwnerprof.push(newProfile); // Add to the array
 
         emit CarOwnerRegistered(msg.sender, _name, block.timestamp);
     }
@@ -126,20 +135,15 @@ contract CarOwner {
             )
         );
         ownerHistories[owner].totalListings++;
-
-      
     }
 
-   
     function incrementTotalListings(address owner) external {
         ownerHistories[owner].totalListings++;
     }
 
-    function getCarOwnerProfile(address _ownerAddress)
-        external
-        view
-        returns (CarOwnerProfile memory)
-    {
+    function getCarOwnerProfile(
+        address _ownerAddress
+    ) external view returns (CarOwnerProfile memory) {
         require(
             carOwnerProfiles[_ownerAddress].isRegistered,
             "Car owner not registered"
@@ -186,8 +190,7 @@ contract CarOwner {
         );
         history.totalRentals++;
 
-     carOwnerProfiles[owner].activeRentals++;
-
+        carOwnerProfiles[owner].activeRentals++;
     }
 
     function incrementTotalVehicles(address owner) external {
@@ -202,43 +205,33 @@ contract CarOwner {
         carOwnerProfiles[owner].totalEarnings += amount;
     }
 
-    function getVehicleListings(address _ownerAddress)
-        external
-        view
-        returns (VehicleListing[] memory)
-    {
+    function getVehicleListings(
+        address _ownerAddress
+    ) external view returns (VehicleListing[] memory) {
         return ownerHistories[_ownerAddress].vehicleListings;
     }
 
-    function getActiveRentals(address _ownerAddress)
-        external
-        view
-        returns (RentalRecord[] memory)
-    {
+    function getActiveRentals(
+        address _ownerAddress
+    ) external view returns (RentalRecord[] memory) {
         return ownerHistories[_ownerAddress].activeRentals;
     }
 
-    function getCarOwnerPastRentals(address _ownerAddress)
-        external
-        view
-        returns (RentalRecord[] memory)
-    {
+    function getCarOwnerPastRentals(
+        address _ownerAddress
+    ) external view returns (RentalRecord[] memory) {
         return ownerHistories[_ownerAddress].carOwnerPastRentals;
     }
 
-    function getTotalListings(address _ownerAddress)
-        external
-        view
-        returns (uint256)
-    {
+    function getTotalListings(
+        address _ownerAddress
+    ) external view returns (uint256) {
         return ownerHistories[_ownerAddress].totalListings;
     }
 
-    function getTotalRentals(address _ownerAddress)
-        external
-        view
-        returns (uint256)
-    {
+    function getTotalRentals(
+        address _ownerAddress
+    ) external view returns (uint256) {
         return ownerHistories[_ownerAddress].totalRentals;
     }
 
@@ -283,5 +276,14 @@ contract CarOwner {
                 review: ""
             })
         );
+    }
+
+    function getAllCarOwner()
+        external
+        view
+        validAddress
+        returns (CarOwnerProfile[] memory)
+    {
+        return carOwnerprof;
     }
 }
