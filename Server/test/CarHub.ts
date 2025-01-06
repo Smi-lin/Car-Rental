@@ -1,5 +1,6 @@
 import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { expect } from "chai";
+import { time } from "@nomicfoundation/hardhat-network-helpers";
 import hre from "hardhat";
 
 describe("CarHub Test", function () {
@@ -304,4 +305,209 @@ describe("CarHub Test", function () {
     //   ).to.be.revertedWith("You have already rated this vehicle");
     // });
   });
+
+  describe("Dispute Management", () => {
+    it("Should be able to  raise a dispute successfully", async function () {
+      const { carHub, carOwner, rentee, usdcMock, otherAccount } =
+        await loadFixture(deployCarHubFixture);
+
+      await carOwner.registerAsCarOwner("Matex", "ImHash123");
+      await carHub.listVehicle(
+        "ipfs_hash",
+        "Toyota",
+        "Camry",
+        "No smoking in my car",
+        hre.ethers.parseEther("0.1"),
+        hre.ethers.parseEther("1")
+      );
+
+      await rentee
+        .connect(otherAccount)
+        .registerAsRentee("Adesola", "ImHash456");
+
+      const rentalCost = hre.ethers.parseEther("1.1"); 
+      await usdcMock
+        .connect(otherAccount)
+        .approve(await carHub.getAddress(), rentalCost);
+      await usdcMock.mint(otherAccount.address, rentalCost);
+
+      await carHub.connect(otherAccount).rentVehicle(1, 3600);
+
+      const disputeDescription = "Car was not in the condition as described";
+      const requestedRefund = hre.ethers.parseEther("0.5");
+      
+      const disputeTx = await carHub
+        .connect(otherAccount)
+        .raiseDispute(1, disputeDescription, requestedRefund);
+
+      await expect(disputeTx)
+        .to.emit(carHub, "DisputeRaised")
+        .withArgs(
+          1,
+          otherAccount.address,
+          disputeDescription,
+          requestedRefund,
+          await time.latest()
+        );
+    });
+
+    it("Should not allow non-renters to raise disputes", async function () {
+      const { carHub, carOwner,  Addr1 } =
+        await loadFixture(deployCarHubFixture);
+
+      await carOwner.registerAsCarOwner("Matex", "ImHash123");
+      await carHub.listVehicle(
+        "ipfs_hash",
+        "Toyota",
+        "Camry",
+        "No smoking in my car",
+        hre.ethers.parseEther("0.1"),
+        hre.ethers.parseEther("1")
+      );
+
+      await expect(
+        carHub
+          .connect(Addr1)
+          .raiseDispute(1, "Invalid dispute", hre.ethers.parseEther("0.5"))
+      ).to.be.revertedWith("Only current renter can raise disputes");
+    });
+
+    it("Should be able to resolve dispute successfully", async function () {
+      const { carHub, carOwner, rentee, usdcMock, owner, otherAccount } =
+        await loadFixture(deployCarHubFixture);
+
+      await carOwner.registerAsCarOwner("Matex", "ImHash123");
+      await carHub.listVehicle(
+        "ipfs_hash",
+        "Toyota",
+        "Camry",
+        "No smoking in my car",
+        hre.ethers.parseEther("0.1"),
+        hre.ethers.parseEther("1")
+      );
+
+      await rentee
+        .connect(otherAccount)
+        .registerAsRentee("Adesola", "ImHash456");
+
+      const rentalCost = hre.ethers.parseEther("1.1");
+      await usdcMock
+        .connect(otherAccount)
+        .approve(await carHub.getAddress(), rentalCost);
+      await usdcMock.mint(otherAccount.address, rentalCost);
+
+      await carHub.connect(otherAccount).rentVehicle(1, 3600);
+
+      await carHub
+        .connect(otherAccount)
+        .raiseDispute(1, "Car issues", hre.ethers.parseEther("0.5"));
+
+      await usdcMock.mint(
+        await carHub.getAddress(),
+        hre.ethers.parseEther("1.0")
+      );
+
+      const resolution = "Partial refund approved";
+      const refundAmount = hre.ethers.parseEther("0.3");
+      
+      const resolveTx = await carHub
+        .connect(owner)
+        .resolveDispute(1, resolution, refundAmount);
+
+      await expect(resolveTx)
+        .to.emit(carHub, "DisputeResolved")
+        .withArgs(
+          1,
+          otherAccount.address,
+          resolution,
+          refundAmount,
+          await time.latest()
+        );
+    });
+
+    it("Should not allow non-owners to resolve disputes", async function () {
+      const { carHub, carOwner, rentee, usdcMock, owner, otherAccount } =
+        await loadFixture(deployCarHubFixture);
+
+      await carOwner.registerAsCarOwner("Matex", "ImHash123");
+      await carHub.listVehicle(
+        "ipfs_hash",
+        "Toyota",
+        "Camry",
+        "No smoking in my car",
+        hre.ethers.parseEther("0.1"),
+        hre.ethers.parseEther("1")
+      );
+
+      await rentee
+        .connect(otherAccount)
+        .registerAsRentee("Adesola", "ImHash456");
+
+      const rentalCost = hre.ethers.parseEther("1.1");
+      await usdcMock
+        .connect(otherAccount)
+        .approve(await carHub.getAddress(), rentalCost);
+      await usdcMock.mint(otherAccount.address, rentalCost);
+
+      await carHub.connect(otherAccount).rentVehicle(1, 3600);
+      await carHub
+        .connect(otherAccount)
+        .raiseDispute(1, "Car issues", hre.ethers.parseEther("0.5"));
+
+      await expect(
+        carHub
+          .connect(otherAccount)
+          .resolveDispute(1, "Invalid resolution", hre.ethers.parseEther("0.3"))
+      ).to.be.revertedWith("Only vehicle owner can resolve disputes");
+    });
+
+    it("Should retrieve all disputes for a car owner", async function () {
+      const { carHub, carOwner, rentee, usdcMock, owner, otherAccount } =
+        await loadFixture(deployCarHubFixture);
+
+      await carOwner.registerAsCarOwner("Matex", "ImHash123");
+      await carHub.listVehicle(
+        "ipfs_hash1",
+        "Toyota",
+        "Camry",
+        "No smoking in my car",
+        hre.ethers.parseEther("0.1"),
+        hre.ethers.parseEther("1")
+      );
+      
+      await carHub.listVehicle(
+        "ipfs_hash2",
+        "Honda",
+        "Civic",
+        "No pets allowed",
+        hre.ethers.parseEther("0.1"),
+        hre.ethers.parseEther("1")
+      );
+
+      await rentee
+        .connect(otherAccount)
+        .registerAsRentee("Adesola", "ImHash456");
+
+      const rentalCost = hre.ethers.parseEther("1.1");
+      await usdcMock
+        .connect(otherAccount)
+        .approve(await carHub.getAddress(), rentalCost * 2n);
+      await usdcMock.mint(otherAccount.address, rentalCost * 2n);
+
+      await carHub.connect(otherAccount).rentVehicle(1, 3600);
+      await carHub.connect(otherAccount).rentVehicle(2, 3600);
+
+      await carHub
+        .connect(otherAccount)
+        .raiseDispute(1, "First car issues", hre.ethers.parseEther("0.5"));
+      await carHub
+        .connect(otherAccount)
+        .raiseDispute(2, "Second car issues", hre.ethers.parseEther("0.5"));
+
+      const disputes = await carHub.getCarOwnerAllDisputes(owner.address);
+      expect(disputes.length).to.equal(2);
+      expect(disputes[0].description).to.equal("First car issues");
+      expect(disputes[1].description).to.equal("Second car issues");
+    });
+});
 });
