@@ -14,7 +14,6 @@ const Header = () => {
       <header className="fixed top-0 left-0 right-0 z-50 border-b-2 bg-white shadow-sm">
         <div className="w-full px-4">
           <div className="flex justify-between items-center h-16">
-
             <div className="flex-shrink-0">
               <Link to="/" className="text-2xl font-bold text-blue-600">
                 CarHive
@@ -63,11 +62,15 @@ const Header = () => {
                 >
                   Sign Up
                 </Link>
-              <div>
-              <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-colors font-medium shadow-md">
+                <div>
+                  {/* <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-colors font-medium shadow-md">
                   Connect Wallet
-                </button>
-              </div>
+                </button> */}
+
+                  <div>
+                    <appkit-button /> 
+                    </div>
+                </div>
                 <button
                   className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
                   aria-label="Toggle theme"
