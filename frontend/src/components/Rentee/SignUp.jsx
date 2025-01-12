@@ -3,9 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
 import { toast } from "react-toastify";
-import useRegisterAsRentee from "../hooks/useRegisterAsRentee";
+import useRegisterAsRentee from "../../hooks/useRegisterAsRentee";
 
-import { siweConfig } from "../config/siwe";
+import { siweConfig } from "../../config/siwe";
 import { BrowserProvider, JsonRpcSigner } from "ethers";
 
 const animStar = keyframes`

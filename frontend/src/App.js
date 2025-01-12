@@ -4,7 +4,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css"
 import Home from "./pages/Home";
 import Layout from "./Layout";
-import SignUp from "./components/SignUp";
 import Fleet from "./components/Fleet";
 import AboutUs from "./components/AboutUs";
 import Faq from "./components/Faq";
@@ -12,7 +11,8 @@ import CarOwnerDashboardPage from "./pages/CarOwner/CarOwnerDashboardPage";
 import CarOwnerSignUp from "./components/CarOwner/CarOwnerSignup";
 import CarownerCreateVehicle from "./components/CarOwner/CarownerCreateVehicle";
 import CarOwnerNotifications from "./components/CarOwner/CarOwnerNotifications";
-import RenteeDashboard from "./components/RenteeDashboardHero";
+import RenteeDashboard from "./components/Rentee/RenteeDashboardHero";
+import SignUp from "./components/Rentee/SignUp";
 
 const App = () => {
   return (
@@ -68,7 +68,7 @@ const App = () => {
           }
         />
         <Route
-          path="/dashboard"
+          path="/carowner-dashboard"
           element={
               <CarOwnerDashboardPage />
           }

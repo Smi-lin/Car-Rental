@@ -64,7 +64,7 @@ const CarOwnerSignUp = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate('/dashboard');  
+    navigate('/carowner-dashboard');  
   };
 
   const handleImageChange = (e) => {
