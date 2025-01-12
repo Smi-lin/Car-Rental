@@ -11,7 +11,14 @@ const useSignerOrProvider = () => {
   const provider = useMemo(
     () => (walletProvider ? new BrowserProvider(walletProvider) : null),
     [walletProvider]
+    
   );
+  console.log("Wallet Provider:", walletProvider);
+  console.log("Provider:", provider);
+
+  // provider.getNetwork().then((network) => {
+  //   console.log("Connected Network:", network.chainId);
+  // });
 
   useEffect(() => {
     if (!provider) return setSigner(null);
@@ -20,6 +27,12 @@ const useSignerOrProvider = () => {
       if (!signer) return setSigner(newSigner);
       if (newSigner.address === signer.address) return;
       setSigner(newSigner);
+    });
+  }, [provider, signer]);
+  useEffect(() => {
+    if (!provider || !signer) return;
+    provider.getBalance(signer.address).then((balance) => {
+      console.log("Wallet Balance:", balance.toString());
     });
   }, [provider, signer]);
 

@@ -5,10 +5,12 @@ import { toast } from "react-toastify";
 import { baseSepolia } from "@reown/appkit/networks";
 import { ErrorDecoder } from "ethers-decode-error";
 
+
 const useRegisterAsCarOwner = () => {
   const contract = useContractInstance("CONTRACT2", true);
   const { address } = useAppKitAccount();
   const { chainId } = useAppKitNetwork();
+
 
   return useCallback(
     async (username, imageHash) => {

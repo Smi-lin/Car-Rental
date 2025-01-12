@@ -10,10 +10,6 @@ import {
   getChainIdFromMessage,
 } from '@reown/appkit-siwe'
 
-
-
-
-
 // get Project ID
 const projectId = process.env.PROJECT_ID;
 
@@ -88,7 +84,6 @@ app.post('/verify', async (req, res) => {
   app.get('/session', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     console.log("/session", req.session.siwe);
-
     res.send(req.session.siwe);
   });
 
