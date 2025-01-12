@@ -8,7 +8,8 @@ import {
   verifySignature,
   getAddressFromMessage,
   getChainIdFromMessage,
-} from "@reown/appkit-siwe";
+} from '@reown/appkit-siwe'
+
 
 // get Project ID
 const projectId = process.env.PROJECT_ID;
@@ -46,6 +47,15 @@ app.post("/verify", async (req, res) => {
     if (!req.body.message) {
       return res.status(400).json({ error: "SiweMessage is undefined" });
     }
+  });
+
+  // get the session
+  app.get('/session', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    console.log("/session", req.session.siwe);
+    res.send(req.session.siwe);
+  });
+
     const message = req.body.message;
 
     const address = getAddressFromMessage(message);

@@ -1,4 +1,5 @@
-import "./config/connection"
+
+import "./config/connection";
 import React from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -10,6 +11,8 @@ import AboutUs from "./components/AboutUs";
 import Faq from "./components/Faq";
 import CarOwnerDashboardPage from "./pages/CarOwner/CarOwnerDashboardPage";
 import CarOwnerSignUp from "./components/CarOwner/CarOwnerSignup";
+
+
 
 const App = () => {
   return (
