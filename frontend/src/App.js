@@ -9,7 +9,7 @@ import AboutUs from "./components/AboutUs";
 import Faq from "./components/Faq";
 import CarOwnerDashboardPage from "./pages/CarOwner/CarOwnerDashboardPage";
 import CarOwnerSignUp from "./components/CarOwner/CarOwnerSignup";
-import CarownerCreateVehicle from "./components/CarOwner/CarownerCreateVehicle";
+import CarOwnerCreateVehicle from "./components/CarOwner/CarOwnerCreateVehicle";
 import CarOwnerNotifications from "./components/CarOwner/CarOwnerNotifications";
 import RenteeDashboard from "./components/Rentee/RenteeDashboardHero";
 import SignUp from "./components/Rentee/SignUp";
@@ -76,7 +76,7 @@ const App = () => {
         <Route
           path="/createVehicles"
           element={
-              <CarownerCreateVehicle />
+              <CarOwnerCreateVehicle />
           }
         />
         <Route
