@@ -1,8 +1,7 @@
-
-import "./config/connection";
+import "./config/connection"
 import React from "react";
-import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "./App.css"
 import Home from "./pages/Home";
 import Layout from "./Layout";
 import SignUp from "./components/SignUp";
@@ -11,8 +10,9 @@ import AboutUs from "./components/AboutUs";
 import Faq from "./components/Faq";
 import CarOwnerDashboardPage from "./pages/CarOwner/CarOwnerDashboardPage";
 import CarOwnerSignUp from "./components/CarOwner/CarOwnerSignup";
-
-
+import CarownerCreateVehicle from "./components/CarOwner/CarownerCreateVehicle";
+import CarOwnerNotifications from "./components/CarOwner/CarOwnerNotifications";
+import RenteeDashboard from "./components/RenteeDashboardHero";
 
 const App = () => {
   return (
@@ -71,6 +71,24 @@ const App = () => {
           path="/dashboard"
           element={
               <CarOwnerDashboardPage />
+          }
+        />
+        <Route
+          path="/createVehicles"
+          element={
+              <CarownerCreateVehicle />
+          }
+        />
+        <Route
+          path="/notification"
+          element={
+              <CarOwnerNotifications />
+          }
+        />
+        <Route
+          path="/rentee-dashboard"
+          element={
+              <RenteeDashboard />
           }
         />
       </Routes>

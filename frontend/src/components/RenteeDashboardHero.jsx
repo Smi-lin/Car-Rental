@@ -13,9 +13,8 @@ import {
   MdFolder,
 } from "react-icons/md";
 
-import CarownerCreateVehicle from "./CarownerCreateVehicle";
 
-const DashboardHero = () => {
+const RenteeDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeView, setActiveView] = useState("dashboard");
 
@@ -34,12 +33,9 @@ const DashboardHero = () => {
 
   const navItems = [
     { icon: MdPieChart, text: "Dashboard", id: "dashboard" },
-    { icon: MdCalendarToday, text: "Create Vehicles", id: "createVehicles" },
-    { icon: MdEmail, text: "All Vehicles", id: "allVehicles" },
     { icon: MdPerson, text: "Profile", id: "profile" },
-    { icon: MdInventory, text: "History", id: "history" },
-    { icon: MdWork, text: "Past Rentals", id: "pastRentals" },
-    { icon: MdSettings, text: "Settings", id: "settings" },
+    { icon: MdPerson, text: "Dispute", id: "dispute" },
+    { icon: MdPerson, text: "All Dispute", id: "all-dispute" },
   ];
 
   // Dashboard component defined within the file
@@ -107,8 +103,6 @@ const DashboardHero = () => {
     switch (activeView) {
       case "dashboard":
         return <Dashboard />;
-      case "createVehicles":
-        return <CarownerCreateVehicle />;
       default:
         return <Dashboard />;
     }
@@ -187,12 +181,6 @@ const DashboardHero = () => {
             </button>
             <div className="flex items-center space-x-4">
               <button className="text-white relative hover:bg-purple-600 p-2 rounded-lg transition-colors">
-                <MdMessage className="w-6 h-6" />
-                <span className="absolute -top-1 -right-1 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  23
-                </span>
-              </button>
-              <button className="text-white relative hover:bg-purple-600 p-2 rounded-lg transition-colors">
                 <MdNotifications className="w-6 h-6" />
                 <span className="absolute -top-1 -right-1 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   98
@@ -208,4 +196,4 @@ const DashboardHero = () => {
   );
 };
 
-export default DashboardHero;
+export default RenteeDashboard;

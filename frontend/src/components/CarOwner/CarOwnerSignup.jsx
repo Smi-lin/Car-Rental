@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import { toast } from "react-toastify";
-import useRegisterAsRentee from '../../hooks/useRegisterAsRentee';
-
 
 const animStar = keyframes`
   from {
@@ -62,10 +59,8 @@ const StarsBackground = () => (
 );
 
 const CarOwnerSignUp = () => {
-  const createAccount = useRegisterAsRentee();
   const [imagePreview, setImagePreview] = useState(null);
   const navigate = useNavigate();  
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -193,12 +188,6 @@ const CarOwnerSignUp = () => {
               <div className="space-y-4 pt-6">
               
 
-                <div className="text-center text-gray-600">
-                  Already have an account?{' '}
-                  <Link to="/login" className="text-[#03dac6] font-medium hover:text-[#ff0266] transition-colors duration-300">
-                    Sign In
-                  </Link>
-                </div>
               </div>
             </form>
           </div>
