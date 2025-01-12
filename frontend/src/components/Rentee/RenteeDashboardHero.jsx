@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
+import { FaHome } from "react-icons/fa";
 import {
   MdNotifications,
-  MdMessage,
   MdMenu,
   MdPerson,
-  MdCalendarToday,
   MdInventory,
   MdEmail,
-  MdWork,
-  MdSettings,
   MdPieChart,
   MdFolder,
+  MdWork,
 } from "react-icons/md";
-
+import { Link } from "react-router-dom";
 
 const RenteeDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -34,17 +32,15 @@ const RenteeDashboard = () => {
   const navItems = [
     { icon: MdPieChart, text: "Dashboard", id: "dashboard" },
     { icon: MdPerson, text: "Profile", id: "profile" },
-    { icon: MdPerson, text: "Dispute", id: "dispute" },
-    { icon: MdPerson, text: "All Dispute", id: "all-dispute" },
+    { icon: MdInventory, text: "Raise Dispute", id: "dispute" },
+    { icon: MdInventory, text: "All Dispute", id: "all-dispute" },
+    { icon: MdWork, text: "Past Rentals", id: "pastRentals" },
   ];
 
-  // Dashboard component defined within the file
   const Dashboard = () => (
     <>
       <div className="bg-gray-800 rounded-lg p-6 mb-8 shadow-lg hover:shadow-xl transition-shadow">
-        <h1 className="text-2xl font-semibold mb-2">
-          Welcome to Dashboard
-        </h1>
+        <h1 className="text-2xl font-semibold mb-2">Welcome to Dashboard</h1>
         <p className="text-gray-400">
           Hello John Doe, welcome to your awesome dashboard!
         </p>
@@ -164,6 +160,13 @@ const RenteeDashboard = () => {
             ))}
           </ul>
         </nav>
+        <Link to="/">
+                <button className="text-white relative hover:bg-purple-600 p-2 rounded-lg transition-colors mb-6">
+                  <FaHome className="w-[5rem] h-[3rem]" />
+                  <span>Go home</span>
+                </button>
+              </Link>
+        <appkit-button />
       </aside>
 
       <div
@@ -180,6 +183,7 @@ const RenteeDashboard = () => {
               <MdMenu className="w-6 h-6" />
             </button>
             <div className="flex items-center space-x-4">
+             
               <button className="text-white relative hover:bg-purple-600 p-2 rounded-lg transition-colors">
                 <MdNotifications className="w-6 h-6" />
                 <span className="absolute -top-1 -right-1 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">
