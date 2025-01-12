@@ -57,7 +57,7 @@ const Header = () => {
                 </Link>
                 {!isLoading && isRentee && (
                   <Link
-                    to="/dashboard"
+                    to="/rentee-dashboard"
                     className="text-gray-600 hover:text-blue-600 px-3 py-2 transition-colors"
                   >
                     Dashboard
@@ -70,7 +70,6 @@ const Header = () => {
             <div className="hidden md:flex items-center space-x-4">
               {/* Auth Buttons */}
               <div className="flex items-center space-x-3">
-
               {!isLoading && !isRentee && (
                   <Link
                     to="/signup"
@@ -79,13 +78,11 @@ const Header = () => {
                     Sign Up
                   </Link>
                 )}
-
                 <div>
                   {/* <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-colors font-medium shadow-md">
                   Connect Wallet
                 </button> */}
                   <appkit-button />
-
                 </div>
                 <button
                   className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"

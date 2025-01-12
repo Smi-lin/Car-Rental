@@ -111,7 +111,7 @@ const useRegisterAsRentee = () => {
           console.log("IPFS Image Hash:", fileResponse.IpfsHash);
           console.log("IPFS Image URL:", fileUrl);
           console.log("IPFS Metadata URL:", metadataUrl);
-          navigate("/dashboard");
+          navigate("/rentee-dashboard");
           return;
         }
 
