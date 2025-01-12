@@ -4,7 +4,9 @@ import { baseSepolia, sepolia } from '@reown/appkit/networks'
 import {siweConfig} from "./siwe"
 
 // 1. Get projectId
+
 const projectId ="c2993e17e517b95baac47667cdda11d3";
+
 
 // 2. Set the networks
 const networks = [baseSepolia, sepolia]
@@ -30,5 +32,7 @@ createAppKit({
   features: {
     analytics: true
   },
+
   // siweConfig: siweConfig ,
+
 });
