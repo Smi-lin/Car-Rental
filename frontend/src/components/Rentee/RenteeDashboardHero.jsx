@@ -11,10 +11,26 @@ import {
   MdWork,
 } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { useCarHive } from "../../context/carHiveContext";
 
 const RenteeDashboard = () => {
+  const {
+    renteeProfile,
+    loading,
+    address,
+    fetchRenteeProfile
+
+  } = useCarHive();
+
+
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeView, setActiveView] = useState("dashboard");
+
+  useEffect(() => {
+    if (address) {
+      fetchRenteeProfile(address); // Adjust based on your fetching logic
+    }
+  }, [address, fetchRenteeProfile]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -37,13 +53,20 @@ const RenteeDashboard = () => {
     { icon: MdWork, text: "Past Rentals", id: "pastRentals" },
   ];
 
+
+
   const Dashboard = () => (
     <>
       <div className="bg-gray-800 rounded-lg p-6 mb-8 shadow-lg hover:shadow-xl transition-shadow">
         <h1 className="text-2xl font-semibold mb-2">Welcome to Dashboard</h1>
-        <p className="text-gray-400">
-          Hello John Doe, welcome to your awesome dashboard!
-        </p>
+        {loading ? (
+          <p className="text-gray-400">Loading your profile...</p>
+        ) : (
+          <p className="text-gray-400">{renteeProfile?.name ? `${renteeProfile.name}, welcome to your awesome dashboard!` : "Profile not found"}</p>
+        )}
+        {/* <p className="text-gray-400">
+        {renteeProfile?.name}, welcome to your awesome dashboard!
+        </p> */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -54,10 +77,10 @@ const RenteeDashboard = () => {
             </div>
             <div className="ml-4">
               <div className="flex items-center">
-                <h3 className="text-xl font-bold">1,245</h3>
-                <span className="ml-2 text-gray-400">Rentals</span>
+                <h3 className="text-xl font-bold">Active Rentals</h3>
+                {/* <span className="ml-2 text-gray-400">Total Rentals</span> */}
               </div>
-              <p className="text-gray-500">Active Rentals</p>
+              <p className="text-gray-500">{renteeProfile?.activeRentals}</p>
             </div>
           </div>
         </div>
@@ -69,10 +92,10 @@ const RenteeDashboard = () => {
             </div>
             <div className="ml-4">
               <div className="flex items-center">
-                <h3 className="text-xl font-bold">10</h3>
-                <span className="ml-2 text-gray-400">Vehicles</span>
+                <h3 className="text-xl font-bold">Total Rentals</h3>
+                {/* <span className="ml-2 text-gray-400">Vehicles</span> */}
               </div>
-              <p className="text-gray-500">Total Vehicles</p>
+              <p className="text-gray-500">{renteeProfile?.totalRentals}</p>
             </div>
           </div>
         </div>
@@ -84,10 +107,10 @@ const RenteeDashboard = () => {
             </div>
             <div className="ml-4">
               <div className="flex items-center">
-                <h3 className="text-xl font-bold">$500</h3>
-                <span className="ml-2 text-gray-400">Earned</span>
+                <h3 className="text-xl font-bold">  Total Spending</h3>
+                {/* <span className="ml-2 text-gray-400">Earned</span> */}
               </div>
-              <p className="text-gray-500">Total Earnings</p>
+              <p className="text-gray-500">{renteeProfile?.totalSpending} USDC</p>
             </div>
           </div>
         </div>
@@ -138,13 +161,13 @@ const RenteeDashboard = () => {
         <div className="p-4 border-b border-gray-700">
           <div className="flex items-center">
             <img
-              src="/api/placeholder/48/48"
+              src={`https://ipfs.io/ipfs/${renteeProfile?.profileImageHash}`}
               alt="Profile"
               className="w-12 h-12 rounded-full border-2 border-purple-500"
             />
             <div className="ml-3">
-              <h5 className="text-lg text-gray-300 font-medium">John Doe</h5>
-              <p className="text-sm text-purple-400">Car Owner</p>
+              <h5 className="text-lg text-gray-300 font-medium">{renteeProfile?.name}</h5>
+              <p className="text-sm text-purple-400">{renteeProfile?.renteeAddress?.slice(0, 6)}...{renteeProfile?.renteeAddress?.slice(-4)}</p>
             </div>
           </div>
         </div>
@@ -166,7 +189,7 @@ const RenteeDashboard = () => {
                   <span>Go home</span>
                 </button>
               </Link>
-        <appkit-button />
+        {/* <appkit-button /> */}
       </aside>
 
       <div
