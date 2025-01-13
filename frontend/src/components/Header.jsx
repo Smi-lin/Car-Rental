@@ -59,6 +59,7 @@ const Header = () => {
                   <Link
                     to="/rentee-dashboard"
                     className="text-gray-600 hover:text-blue-600 px-3 py-2 transition-colors"
+                   
                   >
                     Dashboard
                   </Link>

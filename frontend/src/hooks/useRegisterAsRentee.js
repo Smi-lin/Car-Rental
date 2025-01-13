@@ -15,8 +15,8 @@ const useRegisterAsRentee = () => {
 
 
   return useCallback(
-    async (username, imageFile) => {
-      if (!username || !imageFile) {
+    async (name,profileImageHash) => {
+      if (!name || !profileImageHash) {
         toast.error("UserName and Profile photo are required");
         return;
       }
@@ -39,10 +39,10 @@ const useRegisterAsRentee = () => {
       try {
         // Upload file to IPFS
         toast.info("Uploading file...");
-        const fileResponse = await pinata.upload.file(imageFile, {
+        const fileResponse = await pinata.upload.file(profileImageHash, {
           metadata: {
             name: "ProfileImage",
-            keyvalues: { username },
+            keyvalues: { name },
           },
         });
 
@@ -55,8 +55,8 @@ const useRegisterAsRentee = () => {
         // Create and upload metadata to IPFS
         toast.info("Uploading metadata to IPFS...");
         const metadata = {
-          username,
-          imageHash: fileResponse.IpfsHash,
+          name,
+          profileImageHash: fileResponse.IpfsHash,
           imageUrl: fileUrl
         };
 
@@ -68,7 +68,7 @@ const useRegisterAsRentee = () => {
         const metadataResponse = await pinata.upload.file(metadataFile, {
           metadata: {
             name: "UserMetadata",
-            keyvalues: { username },
+            keyvalues: { name },
           },
         });
 
@@ -84,20 +84,20 @@ const useRegisterAsRentee = () => {
         
         // Log the parameters being passed to help debug
         console.log("Contract parameters:", {
-          username,
-          imageHash: fileResponse.IpfsHash
+          name,
+          profileImageHash: fileResponse.IpfsHash
         });
 
         // Only pass username and imageHash to the contract
         const estimatedGas = await contract.registerAsRentee.estimateGas(
-          username,
-          fileResponse.IpfsHash
+          name,
+          profileImageHash.IpfsHash
         );
 
         const gasLimit = Math.ceil(Number(estimatedGas) * 1.2);
 
         const tx = await contract.registerAsRentee(
-          username,
+          name,
           fileResponse.IpfsHash,
           {
             gasLimit: gasLimit,
