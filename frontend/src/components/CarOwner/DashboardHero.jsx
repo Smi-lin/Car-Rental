@@ -13,7 +13,7 @@ import {
   MdFolder,
 } from "react-icons/md";
 
-import CarownerCreateVehicle from "./CarownerCreateVehicle";
+import CarOwnerCreateVehicle from "./CarOwnerCreateVehicle";
 
 const DashboardHero = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -108,7 +108,7 @@ const DashboardHero = () => {
       case "dashboard":
         return <Dashboard />;
       case "createVehicles":
-        return <CarownerCreateVehicle />;
+        return <CarOwnerCreateVehicle />;
       default:
         return <Dashboard />;
     }

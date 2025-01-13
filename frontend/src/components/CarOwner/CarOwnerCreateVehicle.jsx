@@ -1,7 +1,7 @@
 import React from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 
-const CarownerCreateVehicle = () => {
+const CarOwnerCreateVehicle = () => {
   const categoriesData = [
     { title: "Sedan" },
     { title: "SUV" },
@@ -127,4 +127,4 @@ const CarownerCreateVehicle = () => {
   );
 };
 
-export default CarownerCreateVehicle;
+export default CarOwnerCreateVehicle;
