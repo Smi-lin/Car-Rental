@@ -69,31 +69,16 @@ Car owners can list their vehicles, set rental terms, and receive payments direc
 1. Clone the repository:
    ```bash
    git clone https://github.com/Smi-lin/Car-Rental
+   cd Car-Rental
    ```
 2. Navigate to the project directory:
    ```bash
-   cd carhive
+   npm install
    ```
 3. Install dependencies:
    ```bash
-   npm install
-   ```
-
-### Running the Project
-1. Compile the smart contracts:
-   ```bash
-   npx hardhat compile
-   ```
-2. Deploy the contracts to BaseSepolia:
-   ```bash
-   npx hardhat run scripts/deploy.js --network sepolia
-   ```
-3. Start the development server:
-   ```bash
    npm start
    ```
-
----
 
 ## Contributing
 
@@ -101,15 +86,15 @@ Contributions are welcome! Please follow these steps:
 1. Fork the repository.
 2. Create a new branch for your feature or bugfix:
    ```bash
-   git checkout -b feature-name
+   git checkout -b "your branch name"
    ```
 3. Commit your changes:
    ```bash
-   git commit -m "Add a feature"
+   git commit -m "Add a commit message"
    ```
 4. Push to your branch:
    ```bash
-   git push origin feature-name
+   git push origin "your branch name"
    ```
 5. Submit a pull request.
 
@@ -123,5 +108,7 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 ## Contact
 
-For questions or feedback, please reach out to [yourname@example.com](mailto:yourname@example.com).
+Project Contributors:
+For questions or feedback, please reach out to [Rokeebat Olajide](mailto:olajideolabimpe26@gmail.com).
+For questions or feedback, please reach out to [Matthew Oparinde](mailto:matexconcept@gmail.com).
 
