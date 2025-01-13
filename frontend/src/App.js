@@ -1,13 +1,18 @@
+import "./config/connection"
 import React from "react";
-import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "./App.css"
 import Home from "./pages/Home";
 import Layout from "./Layout";
-import SignUp from "./components/SignUp";
 import Fleet from "./components/Fleet";
 import AboutUs from "./components/AboutUs";
 import Faq from "./components/Faq";
-import CarOwnerSignUp from "./components/CarOwnerSignup";
+import CarOwnerDashboardPage from "./pages/CarOwner/CarOwnerDashboardPage";
+import CarOwnerSignUp from "./components/CarOwner/CarOwnerSignup";
+import CarownerCreateVehicle from "./components/CarOwner/CarownerCreateVehicle";
+import CarOwnerNotifications from "./components/CarOwner/CarOwnerNotifications";
+import RenteeDashboard from "./components/Rentee/RenteeDashboardHero";
+import SignUp from "./components/Rentee/SignUp";
 
 const App = () => {
   return (
@@ -30,10 +35,10 @@ const App = () => {
           }
         />
         <Route
-          path="/carownerLogin"
+          path="/carownerSignup"
           element={
             <Layout>
-              <CarOwnerSignUp />
+              <CarOwnerSignUp/>
             </Layout>
           }
         />
@@ -60,6 +65,30 @@ const App = () => {
             <Layout>
               <Faq />
             </Layout>
+          }
+        />
+        <Route
+          path="/carowner-dashboard"
+          element={
+              <CarOwnerDashboardPage />
+          }
+        />
+        <Route
+          path="/createVehicles"
+          element={
+              <CarownerCreateVehicle />
+          }
+        />
+        <Route
+          path="/notification"
+          element={
+              <CarOwnerNotifications />
+          }
+        />
+        <Route
+          path="/rentee-dashboard"
+          element={
+              <RenteeDashboard />
           }
         />
       </Routes>

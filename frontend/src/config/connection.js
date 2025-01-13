@@ -1,9 +1,12 @@
 import { createAppKit } from '@reown/appkit/react'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { baseSepolia, sepolia } from '@reown/appkit/networks'
+import {siweConfig} from "./siwe"
 
 // 1. Get projectId
-const projectId = import.meta.env.VITE_APPKIT_PROJECT_ID;
+
+const projectId ="c2993e17e517b95baac47667cdda11d3";
+
 
 // 2. Set the networks
 const networks = [baseSepolia, sepolia]
@@ -27,6 +30,9 @@ createAppKit({
     "--w3m-border-radius-master":"1px"
   },
   features: {
-    analytics: true // Optional - defaults to your Cloud configuration
+    analytics: true
   },
+
+  // siweConfig: siweConfig ,
+
 });

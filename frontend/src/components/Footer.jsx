@@ -92,7 +92,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row justify-between items-center pt-12 mt-12 border-t border-gray-200 text-sm text-gray-600">
           <div>Copyright © {new Date().getFullYear()} CarHive</div>
           <div className="flex gap-6 mt-4 md:mt-0">
