@@ -13,35 +13,34 @@ const AboutUs = () => {
   const features = [
     {
       url: logo1,
-      title: "Quality & Safety",
+      title: "Trust & Security",
       description:
-        "Discover our dedication to excellence as we uphold the strictest quality and safety standards. Every vehicle in our exceptional fleet undergoes rigorous maintenance checks and thorough cleanings, ensuring peak performance and safety. Our meticulous attention to detail guarantees a secure and comfortable journey.",
+        "We prioritize the safety of both car owners and renters through comprehensive verification processes. Every listed vehicle undergoes thorough inspection, and all users are verified for identity and driving history. Our platform includes insurance coverage and 24/7 support for peace of mind.",
     },
     {
       url: logo2,
-      title: "Affordable Rates",
+      title: "Competitive Earnings & Rates",
       description:
-        "We ensure that every level of our services provides excellent value for the cost. Our transparent pricing model ensures no hidden fees or surprise charges. We believe in making premium car rentals accessible without compromising on service quality, offering competitive rates that benefit you.",
+        "Car owners can maximize their vehicle's earning potential with our dynamic pricing model, while renters enjoy competitive rates below traditional rental companies. Our transparent fee structure means no hidden charges for either party, creating a win-win marketplace.",
     },
     {
       url: logo3,
-      title: "Easy Booking",
+      title: "Seamless Platform",
       description:
-        "We've streamlined our rental process to make booking your desired vehicle effortless. Through our user-friendly platform, you can browse our fleet, compare options, and secure your reservation in minutes. Our efficient booking system ensures a seamless experience from start to finish.",
+        "Our user-friendly platform makes it simple for owners to list their vehicles and manage bookings, while renters can easily browse, compare, and book cars. The streamlined process includes secure messaging, digital contracts, and contactless key exchange options.",
     },
     {
       url: logo4,
-      title: "Customer Satisfaction",
+      title: "Community Success",
       description:
-        "Your satisfaction drives our commitment to excellence. We take pride in our responsive customer service team, ready to assist you at every step. we ensure your experience exceeds expectations, backed by our dedication to customer-first service.",
+        "We're built on the success of our community members. Our dedicated support team assists both owners and renters throughout their journey. From listing optimization for owners to 24/7 roadside assistance for renters, we ensure everyone's success on our platform.",
     },
-    
   ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <section className="pb-12 pt-[3rem]">
-        <h1 className="text-4xl font-bold text-center mb-8">Who We are</h1>
+        <h1 className="text-4xl font-bold text-center mb-8">Who We Are</h1>
         <div className="relative h-64 md:h-96 rounded-lg overflow-hidden mb-8">
           <img
             src={woman}
@@ -69,7 +68,7 @@ const AboutUs = () => {
           <div className="relative">
             <div className="absolute -top-4 -left-4">
               <div className="bg-red-500 text-white px-4 py-2 rounded-full text-sm">
-                PICK THE CAR!
+                JOIN OUR COMMUNITY!
               </div>
             </div>
             <img
@@ -80,18 +79,17 @@ const AboutUs = () => {
           </div>
 
           <div className="space-y-6">
-            <div className="text-sm text-gray-600">OUR JOURNEY</div>
+            <div className="text-sm text-gray-600">OUR STORY</div>
             <h2 className="text-3xl font-bold">
-              Pioneering Premium Car Rentals
+              Revolutionizing Car Sharing
             </h2>
             <p className="text-gray-600 leading-relaxed">
-              CarHive embarked on a remarkable journey committed to achieving an
-              excellent position for redefining the travel experience. From the
-              outset, our mission has been clear: to provide exceptional and
-              exceptional service to make every journey unforgettable. We've
-              upheld our commitment to premium quality and safety, offering a
-              diverse range of meticulously maintained vehicles to cater to
-              every preference and requirement.
+              CarHive began with a simple vision: to create a trusted community where car 
+              owners can monetize their vehicles and where people seeking cars can find 
+              the perfect ride. We've built a secure platform that connects vehicle owners 
+              with qualified renters, enabling seamless car sharing experiences. Our 
+              commitment to trust, safety, and community has made us a leading marketplace 
+              for peer-to-peer car sharing.
             </p>
           </div>
         </div>
@@ -101,7 +99,7 @@ const AboutUs = () => {
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-6">Why Choose CarHive?</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Experience the difference with our premium services and exceptional standards
+            Join our thriving community of car owners and renters, where trust meets convenience
           </p>
         </div>
         <div className="grid md:grid-cols-2 gap-8">
@@ -135,14 +133,14 @@ const AboutUs = () => {
           <div className="flex flex-col md:flex-row items-center justify-between p-12 md:p-16">
             <div className="z-10 space-y-6 max-w-2xl">
               <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-                List your vehicle & earn or book your Dream Car Today
+                Start earning as an owner or find your perfect rental today
               </h2>
               <div className="flex flex-wrap gap-4">
                 <button className="bg-white text-black px-8 py-4 rounded-full font-medium hover:bg-gray-100 transition-colors">
-                  Reserve Now
+                  List Your Car
                 </button>
                 <button className="bg-transparent text-white px-8 py-4 rounded-full font-medium border-2 border-white hover:bg-white hover:text-black transition-colors">
-                  View Fleet
+                  Browse Cars
                 </button>
               </div>
             </div>
