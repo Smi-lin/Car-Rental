@@ -364,16 +364,6 @@ const SignUp = () => {
                       Sign Up as a Car Owner
                     </Link>
                   </div>
-
-                  <div className="text-center text-gray-600">
-                    Already have an account?{" "}
-                    <Link
-                      to="/login"
-                      className="text-[#03dac6] font-medium hover:text-[#ff0266] transition-colors duration-300"
-                    >
-                      Log In
-                    </Link>
-                  </div>
                 </div>
               </form>
             </div>

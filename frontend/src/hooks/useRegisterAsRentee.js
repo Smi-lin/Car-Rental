@@ -13,9 +13,8 @@ const useRegisterAsRentee = () => {
   const { chainId } = useAppKitNetwork();
   const navigate = useNavigate();
 
-
   return useCallback(
-    async (name,profileImageHash) => {
+    async (name, profileImageHash) => {
       if (!name || !profileImageHash) {
         toast.error("UserName and Profile photo are required");
         return;
@@ -60,9 +59,7 @@ const useRegisterAsRentee = () => {
           imageUrl: fileUrl
         };
 
-        // Convert metadata object to a Blob
         const metadataBlob = new Blob([JSON.stringify(metadata)], { type: 'application/json' });
-        // Create a File object from the Blob
         const metadataFile = new File([metadataBlob], 'metadata.json', { type: 'application/json' });
 
         const metadataResponse = await pinata.upload.file(metadataFile, {
@@ -82,23 +79,17 @@ const useRegisterAsRentee = () => {
         // Interact with the smart contract
         toast.info("Estimating gas...");
         
-        // Log the parameters being passed to help debug
-        console.log("Contract parameters:", {
-          name,
-          profileImageHash: fileResponse.IpfsHash
-        });
-
-        // Only pass username and imageHash to the contract
+        // Use the IPFS hash from the file upload
         const estimatedGas = await contract.registerAsRentee.estimateGas(
           name,
-          profileImageHash.IpfsHash
+          fileResponse.IpfsHash  // Use the IPFS hash we got from uploading the file
         );
 
         const gasLimit = Math.ceil(Number(estimatedGas) * 1.2);
 
         const tx = await contract.registerAsRentee(
           name,
-          fileResponse.IpfsHash,
+          fileResponse.IpfsHash,  // Use the same IPFS hash here
           {
             gasLimit: gasLimit,
           }
@@ -124,7 +115,6 @@ const useRegisterAsRentee = () => {
           toast.error(reason || "An unexpected error occurred");
         } catch (decodeError) {
           console.error("Error decoding:", decodeError);
-          // If we can't decode the error, show the original error message
           toast.error(err.message || "An unexpected error occurred");
         }
       }
