@@ -67,14 +67,14 @@ const Fleet = () => {
             size={20}
           />
         </div>
-        <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+        <button className="px-6 py-2 bg-black text-white rounded-lg hover:bg-blue-700 transition-colors">
           Search
         </button>
       </div>
 
       <div className="bg-gray-50 min-h-screen py-12">
         <div>
-          <h1 className="text-[5rem] text-center text-blue-500">
+          <h1 className="text-[5rem] text-center text-[#001524]">
             Our Collections
           </h1>
         </div>
@@ -126,7 +126,7 @@ const Fleet = () => {
                     </div>
                   </div>
 
-                  <button className="mt-6 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                  <button className="mt-6 w-full bg-[#2d2d2c] text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200">
                     Book Now
                   </button>
                 </div>
