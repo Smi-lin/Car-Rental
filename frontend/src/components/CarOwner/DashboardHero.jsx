@@ -12,12 +12,27 @@ import {
   MdPieChart,
   MdFolder,
 } from "react-icons/md";
-
+import { useCarHive } from "../../context/carHiveContext";
 import CarOwnerCreateVehicle from "./CarOwnerCreateVehicle";
 
 const DashboardHero = () => {
+
+  const {
+    carOwnerProfile,
+    loading,
+    address,
+    fetchCarOwnerProfile
+
+  } = useCarHive();
+
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeView, setActiveView] = useState("dashboard");
+
+  useEffect(() => {
+    if (address) {
+      fetchCarOwnerProfile(address); // Adjust based on your fetching logic
+    }
+  }, [address, fetchCarOwnerProfile]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -49,9 +64,15 @@ const DashboardHero = () => {
         <h1 className="text-2xl font-semibold mb-2">
           Welcome to Dashboard
         </h1>
-        <p className="text-gray-400">
+
+        {loading ? (
+          <p className="text-gray-400">Loading your profile...</p>
+        ) : (
+          <p className="text-gray-400">{carOwnerProfile?.name ? `${carOwnerProfile.name}, welcome to your awesome dashboard!` : "Profile not found"}</p>
+        )}
+        {/* <p className="text-gray-400">
           Hello John Doe, welcome to your awesome dashboard!
-        </p>
+        </p> */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -62,11 +83,11 @@ const DashboardHero = () => {
             </div>
             <div className="ml-4">
               <div className="flex items-center">
-                <h3 className="text-xl font-bold">1,245</h3>
-                <span className="ml-2 text-gray-400">Rentals</span>
+                <h3 className="text-xl font-bold">Active Rentals</h3>
+                {/* <span className="ml-2 text-gray-400">Rentals</span> */}
               </div>
-              <p className="text-gray-500">Active Rentals</p>
-            </div>
+              <p className="text-gray-500">{carOwnerProfile?.activeRentals}</p>           
+               </div>
           </div>
         </div>
 
@@ -77,10 +98,11 @@ const DashboardHero = () => {
             </div>
             <div className="ml-4">
               <div className="flex items-center">
-                <h3 className="text-xl font-bold">10</h3>
-                <span className="ml-2 text-gray-400">Vehicles</span>
+                <h3 className="text-xl font-bold">All Vehicles</h3>
+                {/* <span className="ml-2 text-gray-400">Vehicles</span> */}
               </div>
-              <p className="text-gray-500">Total Vehicles</p>
+              <p className="text-gray-500">
+              {carOwnerProfile?.totalVehicles}</p>
             </div>
           </div>
         </div>
@@ -92,11 +114,11 @@ const DashboardHero = () => {
             </div>
             <div className="ml-4">
               <div className="flex items-center">
-                <h3 className="text-xl font-bold">$500</h3>
-                <span className="ml-2 text-gray-400">Earned</span>
+                <h3 className="text-xl font-bold">Earned</h3>
+                {/* <span className="ml-2 text-gray-400">Earned</span> */}
               </div>
-              <p className="text-gray-500">Total Earnings</p>
-            </div>
+              <p className="text-gray-500">{carOwnerProfile?.totalEarnings} USDC</p>         
+              </div>
           </div>
         </div>
       </div>
@@ -147,14 +169,14 @@ const DashboardHero = () => {
       >
         <div className="p-4 border-b border-gray-700">
           <div className="flex items-center">
-            <img
-              src="/api/placeholder/48/48"
+          <img
+              src={`https://ipfs.io/ipfs/${carOwnerProfile?.profileImageHash}`}
               alt="Profile"
               className="w-12 h-12 rounded-full border-2 border-purple-500"
             />
             <div className="ml-3">
-              <h5 className="text-lg text-gray-300 font-medium">John Doe</h5>
-              <p className="text-sm text-purple-400">Car Owner</p>
+            <h5 className="text-lg text-gray-300 font-medium">{carOwnerProfile?.name}</h5>
+            <p className="text-sm text-purple-400">{carOwnerProfile?.carOwnerAddress?.slice(0, 6)}...{carOwnerProfile?.carOwnerAddress?.slice(-4)}</p>
             </div>
           </div>
         </div>
@@ -186,12 +208,6 @@ const DashboardHero = () => {
               <MdMenu className="w-6 h-6" />
             </button>
             <div className="flex items-center space-x-4">
-              <button className="text-white relative hover:bg-purple-600 p-2 rounded-lg transition-colors">
-                <MdMessage className="w-6 h-6" />
-                <span className="absolute -top-1 -right-1 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  23
-                </span>
-              </button>
               <button className="text-white relative hover:bg-purple-600 p-2 rounded-lg transition-colors">
                 <MdNotifications className="w-6 h-6" />
                 <span className="absolute -top-1 -right-1 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">

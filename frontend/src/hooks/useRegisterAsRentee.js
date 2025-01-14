@@ -13,10 +13,9 @@ const useRegisterAsRentee = () => {
   const { chainId } = useAppKitNetwork();
   const navigate = useNavigate();
 
-
   return useCallback(
-    async (username, imageFile) => {
-      if (!username || !imageFile) {
+    async (name, profileImageHash) => {
+      if (!name || !profileImageHash) {
         toast.error("UserName and Profile photo are required");
         return;
       }
@@ -39,10 +38,10 @@ const useRegisterAsRentee = () => {
       try {
         // Upload file to IPFS
         toast.info("Uploading file...");
-        const fileResponse = await pinata.upload.file(imageFile, {
+        const fileResponse = await pinata.upload.file(profileImageHash, {
           metadata: {
             name: "ProfileImage",
-            keyvalues: { username },
+            keyvalues: { name },
           },
         });
 
@@ -55,20 +54,18 @@ const useRegisterAsRentee = () => {
         // Create and upload metadata to IPFS
         toast.info("Uploading metadata to IPFS...");
         const metadata = {
-          username,
-          imageHash: fileResponse.IpfsHash,
+          name,
+          profileImageHash: fileResponse.IpfsHash,
           imageUrl: fileUrl
         };
 
-        // Convert metadata object to a Blob
         const metadataBlob = new Blob([JSON.stringify(metadata)], { type: 'application/json' });
-        // Create a File object from the Blob
         const metadataFile = new File([metadataBlob], 'metadata.json', { type: 'application/json' });
 
         const metadataResponse = await pinata.upload.file(metadataFile, {
           metadata: {
             name: "UserMetadata",
-            keyvalues: { username },
+            keyvalues: { name },
           },
         });
 
@@ -82,23 +79,17 @@ const useRegisterAsRentee = () => {
         // Interact with the smart contract
         toast.info("Estimating gas...");
         
-        // Log the parameters being passed to help debug
-        console.log("Contract parameters:", {
-          username,
-          imageHash: fileResponse.IpfsHash
-        });
-
-        // Only pass username and imageHash to the contract
+        // Use the IPFS hash from the file upload
         const estimatedGas = await contract.registerAsRentee.estimateGas(
-          username,
-          fileResponse.IpfsHash
+          name,
+          fileResponse.IpfsHash  // Use the IPFS hash we got from uploading the file
         );
 
         const gasLimit = Math.ceil(Number(estimatedGas) * 1.2);
 
         const tx = await contract.registerAsRentee(
-          username,
-          fileResponse.IpfsHash,
+          name,
+          fileResponse.IpfsHash,  // Use the same IPFS hash here
           {
             gasLimit: gasLimit,
           }
@@ -124,7 +115,6 @@ const useRegisterAsRentee = () => {
           toast.error(reason || "An unexpected error occurred");
         } catch (decodeError) {
           console.error("Error decoding:", decodeError);
-          // If we can't decode the error, show the original error message
           toast.error(err.message || "An unexpected error occurred");
         }
       }

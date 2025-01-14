@@ -66,8 +66,8 @@ const StarsBackground = () => (
 const SignUp = () => {
   const createAccount = useRegisterAsRentee();
   const navigate = useNavigate();
-  const [userName, setUserName] = useState("");
-  const [imageHash, setImageHash] = useState();
+  const [name, setName] = useState("");
+  const [profileImageHash, setProfileImageHash] = useState();
   const [isUploading, setIsUploading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -126,7 +126,7 @@ const SignUp = () => {
     // setIsUploading(true);
     setIsUploading(true);
     try {
-      await createAccount(userName, imageHash);
+      await createAccount(name, profileImageHash);
     } catch (error) {
       console.error("Error while signing up:", error);
       toast.error("An error occurred while creating your account.");
@@ -137,7 +137,7 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!userName || !imageHash) {
+    if (!name || !profileImageHash) {
       toast.error("Please fill all fields and upload required files.");
       return;
     }
@@ -202,7 +202,7 @@ const SignUp = () => {
 
   const handleImageChange = (e) => {
     const selectedFile = e.target.files[0];
-    setImageHash(selectedFile);
+    setProfileImageHash(selectedFile);
     console.log(selectedFile);
     if (selectedFile) {
       const reader = new FileReader();
@@ -307,8 +307,8 @@ const SignUp = () => {
                     type="text"
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#03dac6] focus:border-transparent outline-none transition bg-white/80"
                     placeholder="Enter your Username"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                   />
                 </div>
 
@@ -362,16 +362,6 @@ const SignUp = () => {
                       className="text-[#03dac6] font-medium  transition-colors duration-300"
                     >
                       Sign Up as a Car Owner
-                    </Link>
-                  </div>
-
-                  <div className="text-center text-gray-600">
-                    Already have an account?{" "}
-                    <Link
-                      to="/login"
-                      className="text-[#03dac6] font-medium hover:text-[#ff0266] transition-colors duration-300"
-                    >
-                      Log In
                     </Link>
                   </div>
                 </div>
