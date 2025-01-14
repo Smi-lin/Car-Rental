@@ -4,17 +4,20 @@ import { FaInstagram, FaLinkedin, FaYoutube } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-100">
+    <footer className="bg-black">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1">
-            <Link to="/" className="text-2xl font-bold block mt-6 mb-4">
+            <Link
+              to="/"
+              className="text-2xl font-bold block mt-6 mb-4 text-white"
+            >
               CarHive
             </Link>
           </div>
 
           <div className="col-span-1">
-            <h3 className="font-medium text-lg mb-4">About Us</h3>
+            <h3 className="font-medium text-lg mb-4 text-white">About Us</h3>
             <ul className="space-y-3">
               <li>
                 <Link to="/mission" className="text-gray-600 hover:text-black">
@@ -38,7 +41,7 @@ const Footer = () => {
           </div>
 
           <div className="col-span-1">
-            <h3 className="font-medium text-lg mb-4">Support</h3>
+            <h3 className="font-medium text-lg mb-4 text-white">Support</h3>
             <ul className="space-y-3">
               <li>
                 <Link to="/contact" className="text-gray-600 hover:text-black">
@@ -62,7 +65,7 @@ const Footer = () => {
           </div>
 
           <div className="col-span-1">
-            <h3 className="font-medium text-lg mb-4">Social</h3>
+            <h3 className="font-medium text-lg mb-4 text-white">Social</h3>
             <ul className="space-y-3">
               <li>
                 <a

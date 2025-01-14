@@ -5,30 +5,30 @@ const ChooseUs = () => {
   const features = [
     {
       icon: <Smartphone className="w-8 h-8" />,
-      title: "Easy Online Booking",
+      title: "Easy Management",
       description:
-        "Book your premium ride with just a few clicks through our user-friendly online platform",
+        "Simple platform to list your car or find the perfect rental with our user-friendly mobile app",
       bgColor: "bg-[#A7BD80]",
     },
     {
       icon: <UserCheck className="w-8 h-8" />,
-      title: "Professional Drivers",
+      title: "Verified Users",
       description:
-        "Experienced, vetted chauffeurs ensuring your safety and comfort throughout the journey",
+        "All car owners and renters undergo thorough verification for a safe and trusted community",
       bgColor: "bg-gray-800",
     },
     {
       icon: <Crown className="w-8 h-8" />,
-      title: "Variety of Cars Brands",
+      title: "Flexible Options",
       description:
-        "Choose from our extensive fleet of luxury vehicles to match your style and needs",
+        "Set your own rental terms as an owner, or choose from diverse vehicles and rental periods as a renter",
       bgColor: "bg-[#A7BD80]",
     },
     {
       icon: <CreditCard className="w-8 h-8" />,
-      title: "Online Payment",
+      title: "Secure Payments",
       description:
-        "Secure and convenient payment options for a hassle-free booking experience",
+        "Protected transactions with instant payouts for owners and secure payment options for renters",
       bgColor: "bg-gray-800",
     },
   ];
@@ -38,8 +38,9 @@ const ChooseUs = () => {
       <div className="text-center mb-12">
         <h2 className="text-4xl font-bold mb-4">Why Choose Us</h2>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          At CarHive, we pride ourselves in delivering extensive services to
-          fulfill all of your needs with first-rate customer care
+          CarHive connects car owners and renters in a secure marketplace, 
+          providing tools and protection for both parties to ensure a smooth 
+          car sharing experience
         </p>
       </div>
 

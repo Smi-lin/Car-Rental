@@ -1,32 +1,32 @@
 import React from "react";
-import { ArrowRight, Clock, MapPin, Calendar } from "lucide-react";
+import { ArrowRight, MapPin, Calendar } from "lucide-react";
 import lexu from "../assets/fleet1.png";
 import lambo from "../assets/fleet2.png";
 
 const Service = () => {
   const services = [
     {
-      title: "Airport Transfers",
+      title: "List Your Car",
       description:
-        "Experience seamless airport transfers with our premium service. We ensure punctual arrivals and departures, handling your journey with precision and comfort. Our professional chauffeurs monitor flight times and adjust for any changes.",
+        "Turn your car into a profitable asset. Our platform makes it easy for car owners to list their vehicles and earn passive income. We handle the verification, insurance, and payment processing to ensure a secure experience.",
       image: lexu,
       icon: <MapPin className="w-6 h-6" />,
       features: [
-        "Flight monitoring",
-        "Meet & greet service",
-        "24/7 availability",
+        "Comprehensive insurance coverage",
+        "Secure payment processing",
+        "24/7 customer support",
       ],
     },
     {
-      title: "Special Events",
+      title: "Rent a Car",
       description:
-        "Make your special occasions truly memorable with our luxury transportation services. From weddings to corporate events, we provide sophisticated vehicles and professional chauffeurs to enhance your experience.",
+        "Access a wide selection of quality vehicles for your needs. From luxury cars to everyday vehicles, find the perfect ride with our easy booking system. Enjoy a seamless rental experience with verified owners and transparent pricing.",
       image: lambo,
       icon: <Calendar className="w-6 h-6" />,
       features: [
-        "Event coordination",
-        "Multiple vehicle options",
-        "Professional uniformed drivers",
+        "Verified vehicles and owners",
+        "Flexible rental periods",
+        "Instant booking confirmation",
       ],
     },
   ];
@@ -35,10 +35,10 @@ const Service = () => {
     <div className="bg-gradient-to-b from-gray-50 to-white py-20 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4">Premium Services</h2>
+          <h2 className="text-4xl font-bold mb-4">How It Works</h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Experience luxury transportation tailored to your needs with our
-            comprehensive range of premium services
+            Whether you're looking to rent out your car or find the perfect vehicle to rent,
+            our platform connects car owners and renters in a secure and seamless way
           </p>
         </div>
 
@@ -57,7 +57,7 @@ const Service = () => {
                     alt={service.title}
                     className="w-full h-[400px] object-cover rounded-2xl shadow-xl transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-black/40 rounded-2xl opacity-0  transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-black/40 rounded-2xl opacity-0 transition-opacity duration-500" />
                 </div>
               </div>
 
@@ -85,7 +85,7 @@ const Service = () => {
                 </div>
 
                 <button className="group inline-flex items-center gap-2 bg-black text-white px-8 py-4 rounded-full text-lg font-medium hover:bg-gray-900 transition-all duration-300">
-                  Book Now
+                  {index === 0 ? "List Your Car" : "Rent Now"}
                   <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
               </div>

@@ -7,34 +7,34 @@ const Faq = () => {
 
   const faqData = [
     {
-      question: "What documents do I need to rent a car?",
+      question: "How does the car listing process work?",
       answer:
-        "To rent a car, you'll need a valid driver's license, proof of insurance, a credit card for the security deposit, and a valid ID. International customers may need additional documentation including an International Driving Permit.",
+        "As a car owner, you can list your vehicle by creating an account, uploading photos and details of your car, setting availability and pricing. Our team will verify your vehicle's information and documentation. Once approved, your car will be visible to potential renters on our platform.",
     },
     {
-      question: "What is your cancellation policy?",
+      question: "What protection do owners and renters get?",
       answer:
-        "Our standard cancellation policy allows free cancellation up to 24 hours before your scheduled pickup. Cancellations made within 24 hours may be subject to a fee. Special rates and promotions may have different cancellation terms.",
+        "We provide comprehensive insurance coverage for both parties during the rental period. Car owners are protected against damage and theft, while renters receive liability coverage. Additionally, we verify all users' identities, driving histories, and maintain a secure payment system.",
     },
     {
-      question: "Is insurance included in the rental price?",
+      question: "How does the payment process work?",
       answer:
-        "Basic insurance is included in the rental price. However, we offer additional coverage options for complete peace of mind. This includes collision damage waiver, theft protection, and personal accident insurance.",
+        "Renters pay through our secure platform when booking a car. Owners receive payments automatically after each completed rental, minus our service fee. We hold the payment for 24 hours after the rental ends to ensure everything is satisfactory. Direct deposits are made to the owner's registered bank account.",
     },
     {
-      question: "Can I modify my reservation?",
+      question: "What happens if there's a problem during the rental?",
       answer:
-        "Yes, you can modify your reservation up to 24 hours before pickup through our website or by contacting our customer service. Changes may affect the rental rate and are subject to vehicle availability.",
+        "Both parties have access to 24/7 support. For mechanical issues, we provide roadside assistance. In case of accidents, our insurance process will guide both parties. We also have a dispute resolution system to handle any disagreements between owners and renters.",
     },
     {
-      question: "What is your fuel policy?",
+      question: "How are rental prices determined?",
       answer:
-        "Our vehicles are provided with a full tank of fuel and should be returned with a full tank. If the vehicle is not returned with a full tank, a refueling fee will be applied based on current market rates plus a service charge.",
+        "Car owners set their base daily rates. Our platform provides pricing recommendations based on your car's make, model, year, and local market conditions. Renters may see different final prices based on duration, season, and demand. We add a service fee to protect both parties.",
     },
     {
-      question: "Do you offer long-term rentals?",
+      question: "What are the requirements for listing or renting a car?",
       answer:
-        "Yes, we offer special rates for long-term rentals exceeding 30 days. These rentals come with additional benefits including maintenance services and flexible mileage packages. Contact us for customized quotes.",
+        "Car owners must have a vehicle less than 15 years old with valid registration and insurance. Renters must be at least 21 years old, have a valid driver's license, clean driving record, and pass our verification process. International renters may need additional documentation.",
     },
   ];
 
@@ -43,7 +43,7 @@ const Faq = () => {
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">Frequently Asked Questions</h1>
         <p className="text-gray-600">
-          Find answers to common questions about our car rental services
+          Find answers to common questions about car sharing on our platform
         </p>
       </div>
 
@@ -78,11 +78,11 @@ const Faq = () => {
         <div className="flex flex-col md:flex-row items-center justify-between p-8 md:p-12">
           <div className="z-10 space-y-4">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
-              Still Have Questions?
+              Need More Information?
             </h2>
-            <p className="text-gray-600">CONTACT US FOR TOP ASSISTANCE</p>
+            <p className="text-gray-600">WE'RE HERE TO HELP OWNERS AND RENTERS</p>
             <button className="bg-red-500 text-white px-6 py-3 rounded-full font-medium hover:bg-red-600 transition-colors">
-              Contact Us
+              Contact Support
             </button>
           </div>
 
