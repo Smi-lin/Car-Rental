@@ -77,7 +77,7 @@ const CarOwnerSignUp = () => {
   // Initialize SIWE config with Base Sepolia
   const supportedChains = [
     {
-      id: 84532, // Base Sepolia chain ID
+      id: 84532,
       name: "Base Sepolia",
     },
   ];
@@ -89,7 +89,7 @@ const CarOwnerSignUp = () => {
       try {
         await window.ethereum.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: "0x14a34" }], // 84532 in hex
+          params: [{ chainId: "0x14a34" }],
         });
       } catch (switchError) {
         if (switchError.code === 4902) {

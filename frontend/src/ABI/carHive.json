@@ -2,10 +2,18 @@
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "usdcContractAddress",
-				"type": "address"
-			},
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			}
+		],
+		"name": "completeRental",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
 			{
 				"internalType": "address",
 				"name": "renteeContractAddress",
@@ -95,6 +103,44 @@
 		"type": "event"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "imageHash",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "make",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "model",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "rentalTerms",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "pricePerHour",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "securityDeposit",
+				"type": "uint256"
+			}
+		],
+		"name": "listVehicle",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -131,6 +177,116 @@
 		],
 		"name": "PriceUpdated",
 		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "requestedRefund",
+				"type": "uint256"
+			}
+		],
+		"name": "raiseDispute",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "rating",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "review",
+				"type": "string"
+			}
+		],
+		"name": "rateVehicle",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "rentalDuration",
+				"type": "uint256"
+			}
+		],
+		"name": "rentVehicle",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "resolution",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "refundAmount",
+				"type": "uint256"
+			}
+		],
+		"name": "resolveDispute",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "vehicleId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_pricePerHour",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_securityDeposit",
+				"type": "uint256"
+			}
+		],
+		"name": "updateRentalPrice",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"anonymous": false,
@@ -306,19 +462,6 @@
 	},
 	{
 		"inputs": [],
-		"name": "USDc",
-		"outputs": [
-			{
-				"internalType": "contract USDC",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "carOwnerContract",
 		"outputs": [
 			{
@@ -328,19 +471,6 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "vehicleId",
-				"type": "uint256"
-			}
-		],
-		"name": "completeRental",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -536,108 +666,6 @@
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "imageHash",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "make",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "model",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "rentalTerms",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "pricePerHour",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "securityDeposit",
-				"type": "uint256"
-			}
-		],
-		"name": "listVehicle",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "vehicleId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "description",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "requestedRefund",
-				"type": "uint256"
-			}
-		],
-		"name": "raiseDispute",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "vehicleId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "rating",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "review",
-				"type": "string"
-			}
-		],
-		"name": "rateVehicle",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "vehicleId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "rentalDuration",
-				"type": "uint256"
-			}
-		],
-		"name": "rentVehicle",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "renteeContract",
 		"outputs": [
@@ -648,52 +676,6 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "vehicleId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "resolution",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "refundAmount",
-				"type": "uint256"
-			}
-		],
-		"name": "resolveDispute",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "vehicleId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_pricePerHour",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_securityDeposit",
-				"type": "uint256"
-			}
-		],
-		"name": "updateRentalPrice",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{

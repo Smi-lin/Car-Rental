@@ -18,7 +18,7 @@ export const useCheckRenteeStatus = () => {
       }
 
       try {
-        // Get rentee profile from the contract and check isRegistered
+
         const profile = await contract.renteeProfiles(address);
         setIsRentee(profile.isRegistered);
       } catch (error) {

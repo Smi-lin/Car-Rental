@@ -12,25 +12,25 @@ import fleet6 from "../assets/fleet6.png"
 const AboutUs = () => {
   const features = [
     {
-      url: logo1,
+      url: Ferrari,
       title: "Trust & Security",
       description:
         "We prioritize the safety of both car owners and renters through comprehensive verification processes. Every listed vehicle undergoes thorough inspection, and all users are verified for identity and driving history. Our platform includes insurance coverage and 24/7 support for peace of mind.",
     },
     {
-      url: logo2,
+      url: Bmw,
       title: "Competitive Earnings & Rates",
       description:
         "Car owners can maximize their vehicle's earning potential with our dynamic pricing model, while renters enjoy competitive rates below traditional rental companies. Our transparent fee structure means no hidden charges for either party, creating a win-win marketplace.",
     },
     {
-      url: logo3,
+      url: Lexus,
       title: "Seamless Platform",
       description:
         "Our user-friendly platform makes it simple for owners to list their vehicles and manage bookings, while renters can easily browse, compare, and book cars. The streamlined process includes secure messaging, digital contracts, and contactless key exchange options.",
     },
     {
-      url: logo4,
+      url: Camry,
       title: "Community Success",
       description:
         "We're built on the success of our community members. Our dedicated support team assists both owners and renters throughout their journey. From listing optimization for owners to 24/7 roadside assistance for renters, we ensure everyone's success on our platform.",

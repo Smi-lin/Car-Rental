@@ -14,23 +14,18 @@ import {
 } from "react-icons/md";
 import { useCarHive } from "../../context/carHiveContext";
 import CarOwnerCreateVehicle from "./CarOwnerCreateVehicle";
+import AllVehcile from "./AllVehcile";
 
 const DashboardHero = () => {
-
-  const {
-    carOwnerProfile,
-    loading,
-    address,
-    fetchCarOwnerProfile
-
-  } = useCarHive();
+  const { carOwnerProfile, loading, address, fetchCarOwnerProfile } =
+    useCarHive();
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeView, setActiveView] = useState("dashboard");
 
   useEffect(() => {
     if (address) {
-      fetchCarOwnerProfile(address); // Adjust based on your fetching logic
+      fetchCarOwnerProfile(address); 
     }
   }, [address, fetchCarOwnerProfile]);
 
@@ -57,18 +52,20 @@ const DashboardHero = () => {
     { icon: MdSettings, text: "Settings", id: "settings" },
   ];
 
-  // Dashboard component defined within the file
+
   const Dashboard = () => (
     <>
-      <div className="bg-gray-800 rounded-lg p-6 mb-8 shadow-lg hover:shadow-xl transition-shadow">
-        <h1 className="text-2xl font-semibold mb-2">
-          Welcome to Dashboard
-        </h1>
+      <div className="bg-[#343a40] rounded-lg p-6 mb-8 shadow-lg hover:shadow-xl transition-shadow">
+        <h1 className="text-2xl font-semibold mb-2">Welcome to Dashboard</h1>
 
         {loading ? (
           <p className="text-gray-400">Loading your profile...</p>
         ) : (
-          <p className="text-gray-400">{carOwnerProfile?.name ? `${carOwnerProfile.name}, welcome to your awesome dashboard!` : "Profile not found"}</p>
+          <p className="text-gray-400">
+            {carOwnerProfile?.name
+              ? `${carOwnerProfile.name}, welcome to your awesome dashboard!`
+              : "Profile not found"}
+          </p>
         )}
         {/* <p className="text-gray-400">
           Hello John Doe, welcome to your awesome dashboard!
@@ -86,8 +83,8 @@ const DashboardHero = () => {
                 <h3 className="text-xl font-bold">Active Rentals</h3>
                 {/* <span className="ml-2 text-gray-400">Rentals</span> */}
               </div>
-              <p className="text-gray-500">{carOwnerProfile?.activeRentals}</p>           
-               </div>
+              <p className="text-gray-500">{carOwnerProfile?.activeRentals}</p>
+            </div>
           </div>
         </div>
 
@@ -101,8 +98,7 @@ const DashboardHero = () => {
                 <h3 className="text-xl font-bold">All Vehicles</h3>
                 {/* <span className="ml-2 text-gray-400">Vehicles</span> */}
               </div>
-              <p className="text-gray-500">
-              {carOwnerProfile?.totalVehicles}</p>
+              <p className="text-gray-500">{carOwnerProfile?.totalVehicles}</p>
             </div>
           </div>
         </div>
@@ -117,8 +113,10 @@ const DashboardHero = () => {
                 <h3 className="text-xl font-bold">Earned</h3>
                 {/* <span className="ml-2 text-gray-400">Earned</span> */}
               </div>
-              <p className="text-gray-500">{carOwnerProfile?.totalEarnings} USDC</p>         
-              </div>
+              <p className="text-gray-500">
+                {carOwnerProfile?.totalEarnings} USDC
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -131,6 +129,8 @@ const DashboardHero = () => {
         return <Dashboard />;
       case "createVehicles":
         return <CarOwnerCreateVehicle />;
+      case "allVehicles":
+        return <AllVehcile />;
       default:
         return <Dashboard />;
     }
@@ -151,7 +151,7 @@ const DashboardHero = () => {
             }`}
         >
           <Icon className="w-5 h-5 mr-3" />
-          <span className="font-medium">{text}</span>
+          <span className="font-medium text-white">{text}</span>
           {isActive && (
             <div className="ml-auto w-1.5 h-1.5 bg-white rounded-full"></div>
           )}
@@ -161,22 +161,27 @@ const DashboardHero = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 w-full">
+    <div className="min-h-screen bg-[#ffffff] text-gray-100 w-full">
       <aside
-        className={`fixed top-0 left-0 h-full w-64 bg-gray-800 transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 left-0 h-full w-64 bg-[#343a40] transition-transform duration-300 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } z-50`}
       >
         <div className="p-4 border-b border-gray-700">
           <div className="flex items-center">
-          <img
+            <img
               src={`https://ipfs.io/ipfs/${carOwnerProfile?.profileImageHash}`}
               alt="Profile"
               className="w-12 h-12 rounded-full border-2 border-purple-500"
             />
             <div className="ml-3">
-            <h5 className="text-lg text-gray-300 font-medium">{carOwnerProfile?.name}</h5>
-            <p className="text-sm text-purple-400">{carOwnerProfile?.carOwnerAddress?.slice(0, 6)}...{carOwnerProfile?.carOwnerAddress?.slice(-4)}</p>
+              <h5 className="text-lg text-gray-300 font-medium">
+                {carOwnerProfile?.name}
+              </h5>
+              <p className="text-sm text-purple-400">
+                {carOwnerProfile?.carOwnerAddress?.slice(0, 6)}...
+                {carOwnerProfile?.carOwnerAddress?.slice(-4)}
+              </p>
             </div>
           </div>
         </div>
@@ -199,7 +204,7 @@ const DashboardHero = () => {
           sidebarOpen ? "ml-64" : "ml-0"
         } transition-margin duration-300 ease-in-out`}
       >
-        <nav className="bg-purple-700 p-4 shadow-lg">
+        <nav className="bg-[#343a40] p-4 shadow-lg">
           <div className="flex justify-between items-center">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
