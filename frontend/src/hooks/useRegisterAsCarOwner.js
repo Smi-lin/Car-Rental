@@ -39,7 +39,6 @@ const useRegisterAsCarOwner = () => {
       }
 
       try {
-        // Upload file to IPFS
         toast.info("Uploading file...");
         const fileResponse = await pinata.upload.file(profileImageHash, {
           metadata: {
@@ -54,7 +53,6 @@ const useRegisterAsCarOwner = () => {
 
         const fileUrl = `https://gateway.pinata.cloud/ipfs/${fileResponse.IpfsHash}`;
 
-        // Create and upload metadata to IPFS
         toast.info("Uploading metadata to IPFS...");
         const metadata = {
           name,
@@ -62,9 +60,8 @@ const useRegisterAsCarOwner = () => {
           imageUrl: fileUrl
         };
 
-        // Convert metadata object to a Blob
+
         const metadataBlob = new Blob([JSON.stringify(metadata)], { type: 'application/json' });
-        // Create a File object from the Blob
         const metadataFile = new File([metadataBlob], 'metadata.json', { type: 'application/json' });
 
         const metadataResponse = await pinata.upload.file(metadataFile, {
@@ -81,16 +78,15 @@ const useRegisterAsCarOwner = () => {
 
         const metadataUrl = `https://gateway.pinata.cloud/ipfs/${metadataResponse.IpfsHash}`;
 
-        // Interact with the smart contract
+
         toast.info("Estimating gas...");
-        
-        // Log the parameters being passed to help debug
+
         console.log("Contract parameters:", {
           name,
           profileImageHash: fileResponse.IpfsHash
         });
 
-        // Only pass username and imageHash to the contract
+  
         const estimatedGas = await contract.registerAsCarOwner.estimateGas(
           name,
           fileResponse.IpfsHash
@@ -113,6 +109,7 @@ const useRegisterAsCarOwner = () => {
           console.log("IPFS Image Hash:", fileResponse.IpfsHash);
           console.log("IPFS Image URL:", fileUrl);
           console.log("IPFS Metadata URL:", metadataUrl);
+          toast.success('Registration successful!');
           navigate("/carowner-dashboard");
           return;
         }
@@ -126,7 +123,7 @@ const useRegisterAsCarOwner = () => {
           toast.error(reason || "An unexpected error occurred");
         } catch (decodeError) {
           console.error("Error decoding:", decodeError);
-          // If we can't decode the error, show the original error message
+
           toast.error(err.message || "An unexpected error occurred");
         }
       }

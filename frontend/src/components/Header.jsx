@@ -1,18 +1,104 @@
 import { Link} from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaBars, FaMoon, FaTimes } from "react-icons/fa";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useCheckRenteeStatus } from '../hooks/useRenteeCheckStatus';
-
+import { useCheckCarOwnerStatus } from '../hooks/useCarOwnerCheckStatus';
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { isRentee, isLoading } = useCheckRenteeStatus();
+  const { isRentee, isLoading: renteeLoading } = useCheckRenteeStatus();
+  const { isCarOwner, loading: ownerLoading } = useCheckCarOwnerStatus();
+
+  // Debug logging
+  useEffect(() => {
+    console.log("Auth Status:", {
+      isRentee,
+      isCarOwner,
+      renteeLoading,
+      ownerLoading
+    });
+  }, [isRentee, isCarOwner, renteeLoading, ownerLoading]);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+
+  // Dashboard link component to handle conditional rendering
+  const DashboardLink = () => {
+    // Debug logging
+    useEffect(() => {
+      console.log("DashboardLink Render:", {
+        isRentee,
+        isCarOwner,
+        renteeLoading,
+        ownerLoading
+      });
+    }, []);
+
+    if (renteeLoading || ownerLoading) {
+      console.log("Loading state - not showing dashboard");
+      return null;
+    }
+
+    if (isCarOwner) {
+      return (
+        <Link
+          to="/carowner-dashboard"
+          className="text-gray-600 hover:text-blue-600 px-3 py-2 transition-colors"
+        >
+          CarOwner Dashboard
+        </Link>
+      );
+    }
+
+    if (isRentee) {
+      console.log("Rendering Rentee Dashboard Link");
+      return (
+        <Link
+          to="/rentee-dashboard"
+          className="text-gray-600 hover:text-blue-600 px-3 py-2 transition-colors"
+        >
+          Rentee Dashboard
+        </Link>
+      );
+    }
+
+    console.log("No dashboard link rendered");
+    return null;
+  };
+
+  const MobileDashboardLink = () => {
+    if (renteeLoading || ownerLoading) {
+      return null;
+    }
+
+    if (isCarOwner) {
+      return (
+        <Link
+          to="/carowner-dashboard"
+          className="block px-3 py-2 rounded-md text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+        >
+          CarOwner Dashboard
+        </Link>
+      );
+    }
+
+    if (isRentee) {
+      return (
+        <Link
+          to="/rentee-dashboard"
+          className="block px-3 py-2 rounded-md text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+        >
+          Rentee Dashboard
+        </Link>
+      );
+    }
+
+    return null;
+  };
+
 
   return (
     <>
@@ -36,7 +122,6 @@ const Header = () => {
 
             <nav className="hidden md:flex absolute left-1/2 transform -translate-x-1/2">
               <div className="flex space-x-8">
-            
                 <Link
                   to="/aboutus"
                   className="text-gray-600 hover:text-blue-600 px-3 py-2 transition-colors"
@@ -55,23 +140,13 @@ const Header = () => {
                 >
                   FAQ
                 </Link>
-                {!isLoading && isRentee && (
-                  <Link
-                    to="/rentee-dashboard"
-                    className="text-gray-600 hover:text-blue-600 px-3 py-2 transition-colors"
-                   
-                  >
-                    Dashboard
-                  </Link>
-                )}
+                <DashboardLink />
               </div>
             </nav>
 
-            {/* Right side buttons and search */}
             <div className="hidden md:flex items-center space-x-4">
-              {/* Auth Buttons */}
               <div className="flex items-center space-x-3">
-              {!isLoading && !isRentee && (
+                {!renteeLoading && !isRentee && !ownerLoading && !isCarOwner && (
                   <Link
                     to="/signup"
                     className="px-4 py-2 text-black rounded-lg transition-colors font-medium"
@@ -80,9 +155,6 @@ const Header = () => {
                   </Link>
                 )}
                 <div>
-                  {/* <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-colors font-medium shadow-md">
-                  Connect Wallet
-                </button> */}
                   <appkit-button />
                 </div>
                 <button
@@ -95,12 +167,11 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Mobile Navigation */}
           {menuOpen && (
             <div className="md:hidden">
               <div className="px-2 pt-2 pb-3 space-y-1">
                 <Link
-                  to="/"
+                  to="/aboutus"
                   className="block px-3 py-2 rounded-md text-gray-600 hover:text-blue-600 hover:bg-gray-50"
                 >
                   About us
@@ -117,15 +188,18 @@ const Header = () => {
                 >
                   FAQ
                 </Link>
-                <Link
-                  to="/signup"
-                  className="block px-3 py-2 text-center bg-blue-600 text-white rounded-lg hover:bg-blue-700 mx-3"
-                >
-                  Sign Up
-                </Link>
-                <button className="w-full px-3 py-2 mt-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 mx-3">
-                  Connect Wallet
-                </button>
+                <MobileDashboardLink />
+                {!renteeLoading && !isRentee && !ownerLoading && !isCarOwner && (
+                  <Link
+                    to="/signup"
+                    className="block px-3 py-2 text-center bg-blue-600 text-white rounded-lg hover:bg-blue-700 mx-3"
+                  >
+                    Sign Up
+                  </Link>
+                )}
+                <div>
+                  <appkit-button />
+                </div>
               </div>
             </div>
           )}

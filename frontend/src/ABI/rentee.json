@@ -253,6 +253,61 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "getAllRentee",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "profileImageHash",
+						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "renteeAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "isRegistered",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "registrationTimestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalRentals",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "activeRentals",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalSpending",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct Rentee.RenteeProfile[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -555,6 +610,60 @@
 		"name": "registerAsRentee",
 		"outputs": [],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "renteeProf",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "profileImageHash",
+				"type": "string"
+			},
+			{
+				"internalType": "address",
+				"name": "renteeAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "bool",
+				"name": "isRegistered",
+				"type": "bool"
+			},
+			{
+				"internalType": "uint256",
+				"name": "registrationTimestamp",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "totalRentals",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "activeRentals",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "totalSpending",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{

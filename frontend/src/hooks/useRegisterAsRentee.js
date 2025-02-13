@@ -36,7 +36,7 @@ const useRegisterAsRentee = () => {
       }
 
       try {
-        // Upload file to IPFS
+  
         toast.info("Uploading file...");
         const fileResponse = await pinata.upload.file(profileImageHash, {
           metadata: {
@@ -51,7 +51,7 @@ const useRegisterAsRentee = () => {
 
         const fileUrl = `https://gateway.pinata.cloud/ipfs/${fileResponse.IpfsHash}`;
 
-        // Create and upload metadata to IPFS
+      
         toast.info("Uploading metadata to IPFS...");
         const metadata = {
           name,
@@ -76,20 +76,20 @@ const useRegisterAsRentee = () => {
 
         const metadataUrl = `https://gateway.pinata.cloud/ipfs/${metadataResponse.IpfsHash}`;
 
-        // Interact with the smart contract
+
         toast.info("Estimating gas...");
         
-        // Use the IPFS hash from the file upload
+
         const estimatedGas = await contract.registerAsRentee.estimateGas(
           name,
-          fileResponse.IpfsHash  // Use the IPFS hash we got from uploading the file
+          fileResponse.IpfsHash  
         );
 
         const gasLimit = Math.ceil(Number(estimatedGas) * 1.2);
 
         const tx = await contract.registerAsRentee(
           name,
-          fileResponse.IpfsHash,  // Use the same IPFS hash here
+          fileResponse.IpfsHash,  
           {
             gasLimit: gasLimit,
           }
@@ -102,6 +102,7 @@ const useRegisterAsRentee = () => {
           console.log("IPFS Image Hash:", fileResponse.IpfsHash);
           console.log("IPFS Image URL:", fileUrl);
           console.log("IPFS Metadata URL:", metadataUrl);
+          toast.success('Registration successful!');
           navigate("/rentee-dashboard");
           return;
         }

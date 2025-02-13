@@ -270,7 +270,7 @@ const SignUp = () => {
                 Create Your Account
               </h2>
               <p className="text-gray-600 mb-8">
-                Join CarHive and discover your perfect vehicle
+                Join CarHive 
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-6">

@@ -28,7 +28,7 @@ const RenteeDashboard = () => {
 
   useEffect(() => {
     if (address) {
-      fetchRenteeProfile(address); // Adjust based on your fetching logic
+      fetchRenteeProfile(address); 
     }
   }, [address, fetchRenteeProfile]);
 
@@ -80,7 +80,7 @@ const RenteeDashboard = () => {
                 <h3 className="text-xl font-bold">Active Rentals</h3>
                 {/* <span className="ml-2 text-gray-400">Total Rentals</span> */}
               </div>
-              <p className="text-gray-500">{renteeProfile?.activeRentals}</p>
+              <p className="text-gray-500">{renteeProfile?.activeRentals || 0}</p>
             </div>
           </div>
         </div>
