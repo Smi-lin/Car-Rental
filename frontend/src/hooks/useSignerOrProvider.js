@@ -61,7 +61,7 @@ const useSignerOrProvider = () => {
     provider.getSigner().then((newSigner) => {
       if (!signer || newSigner.address !== signer.address) {
         setSigner(newSigner);
-        setAddress(newSigner.address); // update the address when signer changes
+        setAddress(newSigner.address); 
       }
     });
   }, [provider, signer]);

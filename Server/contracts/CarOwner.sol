@@ -24,6 +24,7 @@ contract CarOwner {
         uint256 pricePerHour;
         uint256 securityDeposit;
     }
+    
     struct RentalRecord {
         uint256 vehicleId;
         string[] vehicleData;
@@ -207,7 +208,7 @@ contract CarOwner {
 
     function getVehicleListings(
         address _ownerAddress
-    ) external view returns (VehicleListing[] memory) {
+    ) public view returns (VehicleListing[] memory) {
         return ownerHistories[_ownerAddress].vehicleListings;
     }
 

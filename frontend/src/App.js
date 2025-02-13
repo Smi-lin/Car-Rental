@@ -13,6 +13,7 @@ import CarOwnerCreateVehicle from "./components/CarOwner/CarOwnerCreateVehicle";
 import CarOwnerNotifications from "./components/CarOwner/CarOwnerNotifications";
 import RenteeDashboard from "./components/Rentee/RenteeDashboardHero";
 import SignUp from "./components/Rentee/SignUp";
+import AllVehcile from "./components/CarOwner/AllVehcile";
 
 
 
@@ -79,6 +80,12 @@ const App = () => {
           path="/createVehicles"
           element={
               <CarOwnerCreateVehicle />
+          }
+        />
+        <Route
+          path="/allVehicles"
+          element={
+              <AllVehcile />
           }
         />
         <Route

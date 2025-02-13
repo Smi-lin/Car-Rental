@@ -3,31 +3,7 @@ pragma solidity ^0.8.20;
 import "./Rentee.sol";
 import "./CarOwner.sol";
 
-interface USDC {
-    function balanceOf(address account) external view returns (uint256);
-
-    function allowance(
-        address owner,
-        address spender
-    ) external view returns (uint256);
-
-    function transfer(
-        address recipient,
-        uint256 amount
-    ) external returns (bool);
-
-    function approve(address spender, uint256 amount) external returns (bool);
-
-    function transferFrom(
-        address sender,
-        address recipient,
-        uint256 amount
-    ) external returns (bool);
-}
-
 contract CarHub {
-    USDC public USDc;
-
     Rentee public renteeContract;
     CarOwner public carOwnerContract;
 
@@ -83,6 +59,7 @@ contract CarHub {
     mapping(address => uint256[]) private ownerDisputeVehicles;
     mapping(address => Dispute[]) private renterDisputes;
     uint256 public vehicleCounter;
+
     event VehicleListed(
         uint256 vehicleId,
         address owner,
@@ -120,9 +97,7 @@ contract CarHub {
         uint256 rating,
         string review
     );
-
     event Payment(uint256 payment);
-
     event DisputeRaised(
         uint256 vehicleId,
         address renter,
@@ -130,7 +105,6 @@ contract CarHub {
         uint256 requestedRefund,
         uint256 timestamp
     );
-
     event DisputeResolved(
         uint256 vehicleId,
         address renter,
@@ -139,12 +113,8 @@ contract CarHub {
         uint256 timestamp
     );
 
-    constructor(
-        address usdcContractAddress,
-        address renteeContractAddress,
-        address carOwnerContractAddress
-    ) {
-        USDc = USDC(usdcContractAddress);
+    constructor(address renteeContractAddress, address carOwnerContractAddress)
+    {
         renteeContract = Rentee(renteeContractAddress);
         carOwnerContract = CarOwner(carOwnerContractAddress);
     }
@@ -183,7 +153,6 @@ contract CarHub {
 
         carOwnerContract.incrementTotalVehicles(msg.sender);
 
-        // Update the car owner's vehicle listing in the CarOwner contract
         carOwnerContract.addVehicleListing(
             msg.sender,
             vehicleCounter,
@@ -221,7 +190,10 @@ contract CarHub {
         emit PriceUpdated(vehicleId, _pricePerHour, _securityDeposit);
     }
 
-    function rentVehicle(uint256 vehicleId, uint256 rentalDuration) external {
+    function rentVehicle(uint256 vehicleId, uint256 rentalDuration)
+        external
+        payable
+    {
         require(rentalDuration > 0, "Invalid rental duration");
 
         Vehicle storage vehicle = vehicles[vehicleId];
@@ -242,18 +214,14 @@ contract CarHub {
             (vehicle.pricePerHour * rentalDurationInHours);
 
         require(rentalCost > 0, "Invalid rental cost");
-        require(
-            USDc.balanceOf(msg.sender) >= rentalCost,
-            "Insufficient USDC balance"
+        require(msg.value >= rentalCost, "Insufficient ETH sent");
+
+        // Transfer ETH to vehicle owner
+        (bool sent, ) = payable(vehicle.vehicleOwner).call{value: msg.value}(
+            ""
         );
-        require(
-            USDc.allowance(msg.sender, address(this)) >= rentalCost,
-            "Insufficient USDC allowance"
-        );
-        require(
-            USDc.transferFrom(msg.sender, vehicle.vehicleOwner, rentalCost),
-            "USDC transfer failed"
-        );
+        require(sent, "ETH transfer failed");
+
         Rentee.CurrentRentalData memory rentalData = Rentee.CurrentRentalData({
             vehicleId: vehicleId,
             vehicleData: vehicle.vehicleData,
@@ -268,7 +236,6 @@ contract CarHub {
         });
 
         renteeContract.addCurrentRental(msg.sender, rentalData);
-
         renteeContract.updateRenteeStats(msg.sender, rentalCost);
 
         vehicle.currentRenter = msg.sender;
@@ -301,7 +268,7 @@ contract CarHub {
         );
     }
 
-    function completeRental(uint256 vehicleId) external {
+    function completeRental(uint256 vehicleId) external payable {
         Vehicle storage vehicle = vehicles[vehicleId];
 
         require(
@@ -328,6 +295,13 @@ contract CarHub {
                 vehicle.agreedDurationInHours;
             lateFee = (extraHours * vehicle.pricePerHour * 12) / 10;
             totalCost += lateFee;
+            require(msg.value >= lateFee, "Insufficient ETH sent for late fee");
+
+            // Transfer late fee to vehicle owner
+            (bool sent, ) = payable(vehicle.vehicleOwner).call{
+                value: msg.value
+            }("");
+            require(sent, "ETH transfer failed");
         }
 
         emit Payment(totalCost);
@@ -335,18 +309,10 @@ contract CarHub {
         uint256 refundAmount = 0;
         if (totalCost < vehicle.securityDeposit) {
             refundAmount = vehicle.securityDeposit - totalCost;
-        }
 
-        require(
-            USDc.transfer(vehicle.vehicleOwner, totalCost),
-            "USDC payment to owner failed"
-        );
-
-        if (refundAmount > 0) {
-            require(
-                USDc.transfer(msg.sender, refundAmount),
-                "Refund to renter failed"
-            );
+            // Transfer refund to renter
+            (bool sent, ) = payable(msg.sender).call{value: refundAmount}("");
+            require(sent, "Refund transfer failed");
         }
 
         vehicle.currentRenter = address(0);
@@ -476,7 +442,7 @@ contract CarHub {
         uint256 vehicleId,
         string memory resolution,
         uint256 refundAmount
-    ) external {
+    ) external payable {
         Vehicle storage vehicle = vehicles[vehicleId];
         require(
             msg.sender == vehicle.vehicleOwner,
@@ -497,10 +463,15 @@ contract CarHub {
 
         if (refundAmount > 0) {
             require(
-                USDc.transfer(vehicle.currentDispute.renter, refundAmount),
-                "Refund transfer failed"
+                msg.value >= refundAmount,
+                "Insufficient ETH sent for refund"
             );
+            (bool sent, ) = payable(vehicle.currentDispute.renter).call{
+                value: refundAmount
+            }("");
+            require(sent, "Refund transfer failed");
         }
+
         uint256 lastIndex = vehicleDisputes[vehicleId].length - 1;
         vehicleDisputes[vehicleId][lastIndex].status = DisputeStatus.Resolved;
         vehicleDisputes[vehicleId][lastIndex].resolution = resolution;
@@ -515,9 +486,11 @@ contract CarHub {
         );
     }
 
-    function getCarOwnerAllDisputes(
-        address owner
-    ) external view returns (Dispute[] memory) {
+    function getCarOwnerAllDisputes(address owner)
+        external
+        view
+        returns (Dispute[] memory)
+    {
         uint256[] memory vehicleIds = ownerDisputeVehicles[owner];
         uint256 totalDisputes = 0;
 
@@ -539,13 +512,15 @@ contract CarHub {
         return allDisputes;
     }
 
-    function getRenterDisputes(
-        address renter
-    ) external view returns (Dispute[] memory) {
+    function getRenterDisputes(address renter)
+        external
+        view
+        returns (Dispute[] memory)
+    {
         return renterDisputes[renter];
     }
 
-    function getAllVehicles() external view returns (VehicleDetails[] memory) {
+    function getAllVehicles() public view returns (VehicleDetails[] memory) {
         uint256 totalVehicles = vehicleCounter;
         VehicleDetails[] memory allVehicles = new VehicleDetails[](
             totalVehicles
