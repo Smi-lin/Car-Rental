@@ -98,20 +98,46 @@ const Fleet = () => {
     );
     setFilteredVehicles(filtered);
   };
-  const handleRental = async (vehicle) => {
+// Only the handleRental method is modified
+const handleRental = async (vehicle) => {
+  try {
+    if (!address) {
+      toast.error("Please connect your wallet to book a vehicle");
+      return;
+    }
+
+    // // Check network before proceeding
+    // if (window.ethereum) {
+    //   const provider = new ethers.providers.Web3Provider(window.ethereum);
+    //   const network = await provider.getNetwork();
+    //   if (network.chainId !== 84532) {  // Base Sepolia
+    //     toast.error("Please switch to Base Sepolia network");
+    //     return;
+    //   }
+    // }
+
+    // Check if the vehicle is still available with a fresh check
     try {
-      if (!address) {
-        toast.error("Please connect your wallet to book a vehicle");
+      const freshVehicles = await getVehicles();
+      const freshVehicle = freshVehicles.find(v => v.id === vehicle.id);
+      
+      if (!freshVehicle || !freshVehicle.isAvailable) {
+        toast.error("This vehicle is no longer available");
+        await fetchVehicles(); // Refresh the vehicles list
         return;
       }
-
-      setSelectedVehicle(vehicle);
-      setIsRentModalOpen(true);
-    } catch (error) {
-      console.error("Error preparing rental:", error);
-      toast.error("Failed to prepare rental. Please try again.");
+    } catch (checkError) {
+      console.warn("Could not verify vehicle availability:", checkError);
+      // Continue anyway since we'll get a contract error if it's unavailable
     }
-  };
+
+    setSelectedVehicle(vehicle);
+    setIsRentModalOpen(true);
+  } catch (error) {
+    console.error("Error preparing rental:", error);
+    toast.error("Failed to prepare rental. Please try again.");
+  }
+};
 
   const handleConfirmRental = async () => {
     try {

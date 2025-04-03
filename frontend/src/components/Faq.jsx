@@ -39,54 +39,60 @@ const Faq = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">Frequently Asked Questions</h1>
-        <p className="text-gray-600">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="text-center mb-8 sm:mb-12">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4">
+          Frequently Asked Questions
+        </h1>
+        <p className="text-sm sm:text-base text-gray-600 px-4">
           Find answers to common questions about car sharing on our platform
         </p>
       </div>
 
-      <div className="max-w-3xl mx-auto mb-16">
+      <div className="max-w-3xl mx-auto mb-12 sm:mb-16">
         {faqData.map((faq, index) => (
           <div
             key={index}
-            className="mb-4 border border-gray-200 rounded-lg overflow-hidden"
+            className="mb-3 sm:mb-4 border border-gray-200 rounded-lg overflow-hidden"
           >
             <button
-              className="w-full px-6 py-4 flex justify-between items-center bg-white hover:bg-gray-50 transition-colors"
+              className="w-full px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center bg-white hover:bg-gray-50 transition-colors"
               onClick={() => setOpenIndex(openIndex === index ? null : index)}
             >
-              <span className="font-medium text-left">{faq.question}</span>
+              <span className="font-medium text-left text-sm sm:text-base">
+                {faq.question}
+              </span>
               {openIndex === index ? (
-                <IoIosArrowUp className="w-5 h-5 text-gray-500" />
+                <IoIosArrowUp className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 flex-shrink-0 ml-4" />
               ) : (
-                <IoIosArrowDown className="w-5 h-5 text-gray-500" />
+                <IoIosArrowDown className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 flex-shrink-0 ml-4" />
               )}
             </button>
 
             {openIndex === index && (
-              <div className="px-6 py-4 bg-gray-50">
-                <p className="text-gray-600">{faq.answer}</p>
+              <div className="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50">
+                <p className="text-sm sm:text-base text-gray-600">{faq.answer}</p>
               </div>
             )}
           </div>
         ))}
       </div>
 
-      <div className="bg-red-50 rounded-3xl overflow-hidden relative">
-        <div className="flex flex-col md:flex-row items-center justify-between p-8 md:p-12">
-          <div className="z-10 space-y-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+      <div className="bg-red-50 rounded-2xl sm:rounded-3xl overflow-hidden relative">
+        <div className="flex flex-col md:flex-row items-center justify-between p-6 sm:p-8 md:p-12">
+          <div className="z-10 space-y-3 sm:space-y-4 text-center md:text-left">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
               Need More Information?
             </h2>
-            <p className="text-gray-600">WE'RE HERE TO HELP OWNERS AND RENTERS</p>
-            <button className="bg-red-500 text-white px-6 py-3 rounded-full font-medium hover:bg-red-600 transition-colors">
+            <p className="text-sm sm:text-base text-gray-600">
+              WE'RE HERE TO HELP OWNERS AND RENTERS
+            </p>
+            <button className="bg-red-500 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-sm sm:text-base font-medium hover:bg-red-600 transition-colors">
               Contact Support
             </button>
           </div>
 
-          <div className="relative w-full md:w-1/2 mt-8 md:mt-0">
+          <div className="relative w-full md:w-1/2 mt-6 md:mt-0">
             <img
               src={lexu}
               alt="Premium red car"

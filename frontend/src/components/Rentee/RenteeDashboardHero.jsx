@@ -12,23 +12,17 @@ import {
 } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useCarHive } from "../../context/carHiveContext";
+import RenteeProfile from "./RenteeProfile";
 
 const RenteeDashboard = () => {
-  const {
-    renteeProfile,
-    loading,
-    address,
-    fetchRenteeProfile
-
-  } = useCarHive();
-
+  const { renteeProfile, loading, address, fetchRenteeProfile } = useCarHive();
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeView, setActiveView] = useState("dashboard");
 
   useEffect(() => {
     if (address) {
-      fetchRenteeProfile(address); 
+      fetchRenteeProfile(address);
     }
   }, [address, fetchRenteeProfile]);
 
@@ -47,26 +41,22 @@ const RenteeDashboard = () => {
 
   const navItems = [
     { icon: MdPieChart, text: "Dashboard", id: "dashboard" },
-    { icon: MdPerson, text: "Profile", id: "profile" },
+    { icon: MdPerson, text: "Profile", id: "renteeProfile" },
     { icon: MdInventory, text: "Raise Dispute", id: "dispute" },
     { icon: MdInventory, text: "All Dispute", id: "all-dispute" },
     { icon: MdWork, text: "Past Rentals", id: "pastRentals" },
   ];
 
-
-
   const Dashboard = () => (
     <>
       <div className="bg-gray-800 rounded-lg p-6 mb-8 shadow-lg hover:shadow-xl transition-shadow">
         <h1 className="text-2xl font-semibold mb-2">Welcome to Dashboard</h1>
-        {loading ? (
-          <p className="text-gray-400">Loading your profile...</p>
-        ) : (
-          <p className="text-gray-400">{renteeProfile?.name ? `${renteeProfile.name}, welcome to your awesome dashboard!` : "Profile not found"}</p>
-        )}
-        {/* <p className="text-gray-400">
-        {renteeProfile?.name}, welcome to your awesome dashboard!
-        </p> */}
+
+        <p className="text-gray-400">
+          {renteeProfile?.name
+            ? `${renteeProfile.name}, welcome to your awesome dashboard!`
+            : "Profile not found"}
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -78,9 +68,10 @@ const RenteeDashboard = () => {
             <div className="ml-4">
               <div className="flex items-center">
                 <h3 className="text-xl font-bold">Active Rentals</h3>
-                {/* <span className="ml-2 text-gray-400">Total Rentals</span> */}
               </div>
-              <p className="text-gray-500">{renteeProfile?.activeRentals || 0}</p>
+              <p className="text-gray-500">
+                {renteeProfile?.activeRentals || 0}
+              </p>
             </div>
           </div>
         </div>
@@ -93,7 +84,6 @@ const RenteeDashboard = () => {
             <div className="ml-4">
               <div className="flex items-center">
                 <h3 className="text-xl font-bold">Total Rentals</h3>
-                {/* <span className="ml-2 text-gray-400">Vehicles</span> */}
               </div>
               <p className="text-gray-500">{renteeProfile?.totalRentals}</p>
             </div>
@@ -107,10 +97,11 @@ const RenteeDashboard = () => {
             </div>
             <div className="ml-4">
               <div className="flex items-center">
-                <h3 className="text-xl font-bold">  Total Spending</h3>
-                {/* <span className="ml-2 text-gray-400">Earned</span> */}
+                <h3 className="text-xl font-bold"> Total Spending</h3>
               </div>
-              <p className="text-gray-500">{renteeProfile?.totalSpending} USDC</p>
+              <p className="text-gray-500">
+                {renteeProfile?.totalSpending} ETH
+              </p>
             </div>
           </div>
         </div>
@@ -122,6 +113,8 @@ const RenteeDashboard = () => {
     switch (activeView) {
       case "dashboard":
         return <Dashboard />;
+      case "renteeProfile":
+        return <RenteeProfile />;
       default:
         return <Dashboard />;
     }
@@ -166,8 +159,13 @@ const RenteeDashboard = () => {
               className="w-12 h-12 rounded-full border-2 border-purple-500"
             />
             <div className="ml-3">
-              <h5 className="text-lg text-gray-300 font-medium">{renteeProfile?.name}</h5>
-              <p className="text-sm text-purple-400">{renteeProfile?.renteeAddress?.slice(0, 6)}...{renteeProfile?.renteeAddress?.slice(-4)}</p>
+              <h5 className="text-lg text-gray-300 font-medium">
+                {renteeProfile?.name}
+              </h5>
+              <p className="text-sm text-purple-400">
+                {renteeProfile?.renteeAddress?.slice(0, 6)}...
+                {renteeProfile?.renteeAddress?.slice(-4)}
+              </p>
             </div>
           </div>
         </div>
@@ -184,11 +182,11 @@ const RenteeDashboard = () => {
           </ul>
         </nav>
         <Link to="/">
-                <button className="text-white relative hover:bg-purple-600 p-2 rounded-lg transition-colors mb-6">
-                  <FaHome className="w-[5rem] h-[3rem]" />
-                  <span>Go home</span>
-                </button>
-              </Link>
+          <button className="text-white relative hover:bg-purple-600 p-2 rounded-lg transition-colors mb-6">
+            <FaHome className="w-[5rem] h-[3rem]" />
+            <span>Go home</span>
+          </button>
+        </Link>
         {/* <appkit-button /> */}
       </aside>
 
@@ -206,7 +204,6 @@ const RenteeDashboard = () => {
               <MdMenu className="w-6 h-6" />
             </button>
             <div className="flex items-center space-x-4">
-             
               <button className="text-white relative hover:bg-purple-600 p-2 rounded-lg transition-colors">
                 <MdNotifications className="w-6 h-6" />
                 <span className="absolute -top-1 -right-1 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">

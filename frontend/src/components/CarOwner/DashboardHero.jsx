@@ -15,6 +15,8 @@ import {
 import { useCarHive } from "../../context/carHiveContext";
 import CarOwnerCreateVehicle from "./CarOwnerCreateVehicle";
 import AllVehcile from "./AllVehcile";
+import CarOwnerProfile from "./CarOwnerProfile";
+import { Link } from "react-router-dom";
 
 const DashboardHero = () => {
   const { carOwnerProfile, loading, address, fetchCarOwnerProfile } =
@@ -25,7 +27,7 @@ const DashboardHero = () => {
 
   useEffect(() => {
     if (address) {
-      fetchCarOwnerProfile(address); 
+      fetchCarOwnerProfile(address);
     }
   }, [address, fetchCarOwnerProfile]);
 
@@ -49,27 +51,18 @@ const DashboardHero = () => {
     { icon: MdPerson, text: "Profile", id: "profile" },
     { icon: MdInventory, text: "History", id: "history" },
     { icon: MdWork, text: "Past Rentals", id: "pastRentals" },
-    { icon: MdSettings, text: "Settings", id: "settings" },
   ];
-
 
   const Dashboard = () => (
     <>
       <div className="bg-[#343a40] rounded-lg p-6 mb-8 shadow-lg hover:shadow-xl transition-shadow">
         <h1 className="text-2xl font-semibold mb-2">Welcome to Dashboard</h1>
 
-        {loading ? (
-          <p className="text-gray-400">Loading your profile...</p>
-        ) : (
-          <p className="text-gray-400">
-            {carOwnerProfile?.name
-              ? `${carOwnerProfile.name}, welcome to your awesome dashboard!`
-              : "Profile not found"}
-          </p>
-        )}
-        {/* <p className="text-gray-400">
-          Hello John Doe, welcome to your awesome dashboard!
-        </p> */}
+        <p className="text-gray-400">
+          {carOwnerProfile?.name
+            ? `${carOwnerProfile.name}, welcome to your awesome dashboard!`
+            : "Profile not found"}
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -81,7 +74,6 @@ const DashboardHero = () => {
             <div className="ml-4">
               <div className="flex items-center">
                 <h3 className="text-xl font-bold">Active Rentals</h3>
-                {/* <span className="ml-2 text-gray-400">Rentals</span> */}
               </div>
               <p className="text-gray-500">{carOwnerProfile?.activeRentals}</p>
             </div>
@@ -96,7 +88,6 @@ const DashboardHero = () => {
             <div className="ml-4">
               <div className="flex items-center">
                 <h3 className="text-xl font-bold">All Vehicles</h3>
-                {/* <span className="ml-2 text-gray-400">Vehicles</span> */}
               </div>
               <p className="text-gray-500">{carOwnerProfile?.totalVehicles}</p>
             </div>
@@ -111,10 +102,9 @@ const DashboardHero = () => {
             <div className="ml-4">
               <div className="flex items-center">
                 <h3 className="text-xl font-bold">Earned</h3>
-                {/* <span className="ml-2 text-gray-400">Earned</span> */}
               </div>
               <p className="text-gray-500">
-                {carOwnerProfile?.totalEarnings} USDC
+                {carOwnerProfile?.totalEarnings} Eth
               </p>
             </div>
           </div>
@@ -131,6 +121,8 @@ const DashboardHero = () => {
         return <CarOwnerCreateVehicle />;
       case "allVehicles":
         return <AllVehcile />;
+      case "profile":
+        return <CarOwnerProfile />;
       default:
         return <Dashboard />;
     }
@@ -213,12 +205,14 @@ const DashboardHero = () => {
               <MdMenu className="w-6 h-6" />
             </button>
             <div className="flex items-center space-x-4">
+              <Link to="/">
               <button className="text-white relative hover:bg-purple-600 p-2 rounded-lg transition-colors">
                 <MdNotifications className="w-6 h-6" />
                 <span className="absolute -top-1 -right-1 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   98
                 </span>
               </button>
+              </Link>
             </div>
           </div>
         </nav>

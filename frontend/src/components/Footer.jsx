@@ -20,8 +20,8 @@ const Footer = () => {
             <h3 className="font-medium text-lg mb-4 text-white">About Us</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/mission" className="text-gray-600 hover:text-black">
-                  Mission
+                <Link to="/fleet" className="text-gray-600 hover:text-black">
+                  Fleet
                 </Link>
               </li>
               <li>

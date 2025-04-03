@@ -3,7 +3,7 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import useAddVehicle from "../../hooks/useAddVehicle";
 import { useCarHive } from "../../context/carHiveContext";
-import { BrowserProvider } from "ethers";
+import { BrowserProvider, parseEther } from "ethers";
 import { toast } from "react-toastify";
 import { siweConfig } from "../../config/siwe";
 
@@ -14,8 +14,8 @@ const CarOwnerCreateVehicle = () => {
   const [make, setmake] = useState("");
   const [model, setModel] = useState("");
   const [rentalTerms, setRentalTerms] = useState("");
-  const [pricePerHour, setPricePerHour] = useState(0);
-  const [securityDeposit, setSecurityDeposit] = useState(0);
+  const [pricePerHour, setPricePerHour] = useState("");
+  const [securityDeposit, setSecurityDeposit] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const navigate = useNavigate();
@@ -68,101 +68,77 @@ const CarOwnerCreateVehicle = () => {
       return false;
     }
   };
+// Improved decimal validation function
+const isValidDecimal = (value) => {
+  // Allow empty string, digits, and at most one decimal point
+  return /^(\d*\.?\d*)?$/.test(value);
+};
+
+// Handle decimal input change
+const handleDecimalInput = (value, setter) => {
+  if (value === '' || isValidDecimal(value)) {
+    setter(value);
+  }
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (isProcessing) {
-      return;
-    }
-
-    // Validate all fields
-    if (
-      !imageHash ||
-      !make ||
-      !model ||
-      !rentalTerms ||
-      !pricePerHour ||
-      !securityDeposit
-    ) {
-      toast.error("Please fill all fields and upload required files.");
-      return;
-    }
-
-    if (pricePerHour <= 0 || securityDeposit <= 0) {
-      toast.error("Price and security deposit must be greater than 0");
-      return;
-    }
-
-    setIsProcessing(true);
-    let provider;
+    
+    if (isProcessing) return;
 
     try {
-      if (!window.ethereum) {
-        throw new Error("Please install MetaMask to continue!");
-      }
-
-      provider = new BrowserProvider(window.ethereum);
-
-      // Check network first
-      const networkOk = await checkNetwork(provider);
-      if (!networkOk) {
-        setIsProcessing(false);
+      // Validation
+      if (!imageHash || !make || !model || !rentalTerms || !pricePerHour || !securityDeposit) {
+        toast.error("Please fill all fields");
         return;
       }
 
-      const signer = await provider.getSigner();
-      const address = await signer.getAddress();
-      const network = await provider.getNetwork();
-      const chainId = Number(network.chainId);
+      // Make sure price and deposit are valid numbers
+      if (!isValidDecimal(pricePerHour) || !isValidDecimal(securityDeposit)) {
+        toast.error("Please enter valid price and deposit values");
+        return;
+      }
 
-      // SIWE Authentication
-      const messageParams = await siwe.getMessageParams();
-      const message = siwe.createMessage({
-        address,
-        chainId,
-        ...messageParams,
+      setIsProcessing(true);
+
+      if (!window.ethereum) {
+        throw new Error("Please install MetaMask!");
+      }
+
+      const provider = new BrowserProvider(window.ethereum);
+      
+      // Network check
+      const networkValid = await checkNetwork(provider);
+      if (!networkValid) {
+        throw new Error("Please connect to Base Sepolia network");
+      }
+
+      // Convert ETH values to Wei
+      const priceWei = parseEther(pricePerHour);
+      const depositWei = parseEther(securityDeposit);
+
+      console.log("Converting prices to Wei:", {
+        pricePerHour,
+        securityDeposit,
+        priceWei: priceWei.toString(),
+        depositWei: depositWei.toString()
       });
 
-      const signature = await signer.signMessage(message);
-      const verified = await siwe.verifyMessage({ message, signature });
-
-      if (!verified) {
-        throw new Error("Signature verification failed");
-      }
-
-      const session = await siwe.getSession();
-      if (!session) {
-        throw new Error("Failed to establish session");
-      }
-
-      // Call contract
-      toast.info("Processing vehicle listing...");
-      const tx = await addVehicleHook(
+      // Call the hook with direct parameters (not an object)
+      await addVehicleHook(
         imageHash,
         make,
         model,
         rentalTerms,
-        pricePerHour,
-        securityDeposit
+        priceWei,
+        depositWei
       );
-
-      await tx.wait();
-      await refreshVehicles();
 
       toast.success("Vehicle listed successfully!");
       navigate("/fleet");
     } catch (error) {
-      console.error("Vehicle Creation Error:", error);
-      toast.error(error.message || "Failed to list vehicle. Please try again.");
-
-      if (siwe) {
-        try {
-          await siwe.signOut();
-        } catch (signOutError) {
-          console.error("Sign out error:", signOutError);
-        }
-      }
+      console.error("Error details:", error);
+      toast.error(error.message || "Failed to list vehicle");
     } finally {
       setIsProcessing(false);
     }
@@ -234,31 +210,35 @@ const CarOwnerCreateVehicle = () => {
             />
           </div>
 
-          <div>
-            <label className="pb-2 text-black">
-              Price Per Hour <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="number"
-              value={pricePerHour}
-              onChange={(e) => setPricePerHour(e.target.value)}
-              className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              placeholder="Enter price per hour"
-            />
-          </div>
+    {/* Price Per Hour Field */}
+<div>
+  <label className="pb-2 text-black">
+    Price Per Hour (ETH) <span className="text-red-500">*</span>
+  </label>
+  <input
+    type="text"
+    inputMode="decimal"
+    value={pricePerHour}
+    onChange={(e) => handleDecimalInput(e.target.value, setPricePerHour)}
+    className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+    placeholder="0.001"
+  />
+</div>
 
-          <div>
-            <label className="pb-2 text-black">
-              Security Deposit <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="number"
-              value={securityDeposit}
-              onChange={(e) => setSecurityDeposit(e.target.value)}
-              className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              placeholder="Enter security deposit"
-            />
-          </div>
+{/* Security Deposit Field */}
+<div>
+  <label className="pb-2 text-black">
+    Security Deposit (ETH) <span className="text-red-500">*</span>
+  </label>
+  <input
+    type="text"
+    inputMode="decimal"
+    value={securityDeposit}
+    onChange={(e) => handleDecimalInput(e.target.value, setSecurityDeposit)}
+    className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+    placeholder="0.1"
+  />
+</div>
 
           <div>
             <label className="pb-2 text-black cursor-pointer">
@@ -290,6 +270,7 @@ const CarOwnerCreateVehicle = () => {
             </div>
           </div>
 
+          
           <div>
             <button
               className={`w-full sm:w-[15vw] ${
