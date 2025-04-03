@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import lexu from "../assets/fleet1.png";
-import lambo from "../assets/fleet2.png"
-import fera from "../assets/fleet4.png"
+import lambo from "../assets/fleet2.png";
+import fera from "../assets/fleet4.png";
+import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -42,64 +43,67 @@ const HeroSection = () => {
   };
 
   return (
-    <>
-      <div className="bg-gray-100">
-        <div className="relative h-[600px] overflow-hidden">
-          <div
-            className="absolute inset-0 flex transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-          >
-            {carouselImages.map((car, index) => (
-              <div key={index} className="relative w-full h-full flex-shrink-0">
-                <div className="absolute inset-0 bg-black/50"></div>
-                <img
-                  src={car.url}
-                  alt={car.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center text-white max-w-4xl px-4">
-                    <div className="space-y-2 mb-6">
-                      <h1 className="text-7xl font-bold tracking-tight">
-                        {car.mainText}
-                      </h1>
-                      <h1 className="text-4xl font-bold tracking-tight">
-                        {car.subText}
-                      </h1>
-                    </div>
-                    <p className="text-2xl max-w-3xl mx-auto leading-relaxed opacity-90">
-                      {car.description}
-                    </p>
-                    <div className="mt-8 flex gap-4 justify-center">
-                      <button className="bg-white text-black px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transition-all">
-                        List Your Car
-                      </button>
-                      <button className="bg-transparent text-white border-2 border-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:text-black transition-all">
-                        Rent a Car
-                      </button>
-                    </div>
+    <div className="bg-gray-100">
+      <div className="relative h-[400px] sm:h-[500px] md:h-[600px] overflow-hidden">
+        <div
+          className="absolute inset-0 flex transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+        >
+          {carouselImages.map((car, index) => (
+            <div key={index} className="relative w-full h-full flex-shrink-0">
+              <div className="absolute inset-0 bg-black/50"></div>
+              <img
+                src={car.url}
+                alt={car.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center text-white max-w-4xl px-4">
+                  <div className="space-y-2 mb-4 md:mb-6">
+                    <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight">
+                      {car.mainText}
+                    </h1>
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+                      {car.subText}
+                    </h1>
+                  </div>
+                  <p className="text-base sm:text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed opacity-90 px-4">
+                    {car.description}
+                  </p>
+                  <div className="mt-4 sm:mt-6 md:mt-8 flex flex-col sm:flex-row gap-4 justify-center px-4">
+                 <Link to="/createVehicles">
+                 <button className="bg-white text-black px-6 py-3 md:px-8 md:py-4 rounded-full text-base md:text-lg font-semibold hover:bg-gray-100 transition-all">
+                      List Your Car
+                    </button>
+                 </Link>
+                    <Link to="/fleet">
+                    <button className="bg-transparent text-white border-2 border-white px-6 py-3 md:px-8 md:py-4 rounded-full text-base md:text-lg font-semibold hover:bg-white hover:text-black transition-all">
+                      Rent a Car
+                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
 
+        <div className="absolute bottom-4 left-4 right-4 flex justify-between sm:bottom-auto sm:top-1/2 sm:transform sm:-translate-y-1/2">
           <button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 p-2 rounded-full hover:bg-white"
+            className="bg-white/80 p-2 rounded-full hover:bg-white"
           >
-            <FaArrowLeft />
+            <FaArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 p-2 rounded-full hover:bg-white"
+            className="bg-white/80 p-2 rounded-full hover:bg-white"
           >
-            <FaArrowRight />
+            <FaArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
-
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
