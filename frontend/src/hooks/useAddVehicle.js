@@ -56,8 +56,8 @@ const useAddVehicle = () => {
               make,
               model,
               rentalTerms,
-              pricePerHour,
-              securityDeposit,
+              pricePerHour: pricePerHour.toString(),
+              securityDeposit: securityDeposit.toString(),
             },
           },
         });
@@ -75,8 +75,8 @@ const useAddVehicle = () => {
           make,
           model,
           rentalTerms,
-          pricePerHour,
-          securityDeposit,
+          pricePerHour: pricePerHour.toString(),
+          securityDeposit: securityDeposit.toString(),
         };
 
         const metadataBlob = new Blob([JSON.stringify(metadata)], {
@@ -93,8 +93,8 @@ const useAddVehicle = () => {
               make,
               model,
               rentalTerms,
-              pricePerHour,
-              securityDeposit,
+              pricePerHour: pricePerHour.toString(),
+              securityDeposit: securityDeposit.toString(),
             },
           },
         });
@@ -113,8 +113,8 @@ const useAddVehicle = () => {
           make,
           model,
           rentalTerms,
-          pricePerHour,
-          securityDeposit,
+          pricePerHour: pricePerHour.toString(),
+          securityDeposit: securityDeposit.toString(),
         });
 
         const estimatedGas = await contract.listVehicle.estimateGas(
@@ -123,7 +123,7 @@ const useAddVehicle = () => {
           model,
           rentalTerms,
           pricePerHour,
-          securityDeposit,
+          securityDeposit
         );
 
         const gasLimit = Math.ceil(Number(estimatedGas) * 1.2);
@@ -135,7 +135,6 @@ const useAddVehicle = () => {
           rentalTerms,
           pricePerHour,
           securityDeposit,
-
           {
             gasLimit,
           }
@@ -144,12 +143,12 @@ const useAddVehicle = () => {
         const receipt = await tx.wait();
 
         if (receipt.status === 1) {
-          toast.success(" Vehicle Added  successfully");
+          toast.success("Vehicle Added successfully");
           console.log("IPFS Image Hash:", fileResponse.IpfsHash);
           console.log("IPFS Image URL:", fileUrl);
           console.log("IPFS Metadata URL:", metadataUrl);
           navigate("/fleet");
-          return;
+          return tx; // Return the transaction to the caller
         }
         toast.error("Failed to Add car");
       } catch (err) {
@@ -164,6 +163,7 @@ const useAddVehicle = () => {
             err.message || "Failed to add vehicle. Please try again."
           );
         }
+        throw err; // Re-throw the error to be caught by the caller
       }
     },
     [contract, address, chainId, navigate]

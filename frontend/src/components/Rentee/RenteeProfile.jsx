@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useCarHive } from "../../context/carHiveContext";
 import { MdEdit, MdDirectionsCar, MdPerson, MdEmail, MdStar } from "react-icons/md";
 
-const CarOwnerProfile = () => {
-  const { carOwnerProfile, address, fetchCarOwnerProfile } = useCarHive();
+const RenteeProfile = () => {
+  const { renteeProfile, address, fetchRenteeProfile } = useCarHive();
   const [profile, setProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -17,8 +17,8 @@ const CarOwnerProfile = () => {
     const loadProfile = async () => {
       if (address) {
         try {
-          await fetchCarOwnerProfile(address);
-          setProfile(carOwnerProfile); 
+          await fetchRenteeProfile(address);
+          setProfile(renteeProfile); 
           setIsLoading(false); 
         } catch (error) {
           console.error("Failed to fetch car owner profile:", error);
@@ -28,7 +28,7 @@ const CarOwnerProfile = () => {
     };
 
     loadProfile();
-  }, [address, fetchCarOwnerProfile, carOwnerProfile]);
+  }, [address, fetchRenteeProfile, renteeProfile]);
 
   if (isLoading) {
     return (
@@ -142,4 +142,4 @@ const CarOwnerProfile = () => {
   );
 };
 
-export default CarOwnerProfile;
+export default RenteeProfile;

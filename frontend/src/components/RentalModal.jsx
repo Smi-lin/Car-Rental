@@ -101,54 +101,46 @@ const RentalModal = ({
   const handleRentalConfirmation = async () => {
     if (isProcessing) return;
     setIsProcessing(true);
-    let provider;
-
+    
     try {
       if (!window.ethereum) {
         throw new Error("Please install MetaMask to continue!");
       }
 
-      provider = new BrowserProvider(window.ethereum);
-
+      const provider = new BrowserProvider(window.ethereum);
       const networkOk = await checkNetwork(provider);
       if (!networkOk) {
         setIsProcessing(false);
         return;
       }
 
-      const signer = await provider.getSigner();
-      const address = await signer.getAddress();
-      const network = await provider.getNetwork();
-      const chainId = Number(network.chainId);
-
-      const messageParams = await siwe.getMessageParams();
-      const message = siwe.createMessage({
-        address,
-        chainId,
-        ...messageParams,
+      // Calculate rental price (without security deposit for the actual rental)
+      const rentalPrice = calculatePrice(selectedDuration);
+      
+      // Calculate total cost including security deposit
+      const totalCost = calculateTotalCost();
+      
+      console.log("Rental details:", {
+        vehicleId: selectedVehicle.id,
+        durationInMinutes: selectedDuration,
+        rentalPrice: rentalPrice,
+        totalCost: totalCost
       });
 
-      const signature = await signer.signMessage(message);
-      const verified = await siwe.verifyMessage({ message, signature });
-
-      if (!verified) {
-        throw new Error("Signature verification failed");
-      }
-
-      const session = await siwe.getSession();
-      if (!session) {
-        throw new Error("Failed to establish session");
-      }
-
       toast.info("Processing rental transaction...");
-      const tx = await rentVehicle(selectedVehicle.id, selectedDuration);
-      await tx.wait();
+      // Pass the correct parameters to rentVehicle
+      const tx = await rentVehicle(
+        selectedVehicle.id, 
+        selectedDuration,
+        rentalPrice.toString()  // Pass the rental price as a string
+      );
 
-      const totalCost = calculateTotalCost();
-      await updateRentalStats(totalCost);
-
-      toast.success("Vehicle rented successfully!");
-      onClose();
+      // Wait for transaction confirmation
+      if (tx) {
+        await updateRentalStats(totalCost);
+        toast.success("Vehicle rented successfully!");
+        onClose();
+      }
     } catch (error) {
       console.error("Rental Error:", error);
       toast.error(
